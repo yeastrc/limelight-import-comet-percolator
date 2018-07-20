@@ -21,8 +21,10 @@ package org.yeastrc.limelight.xml.comet_percolator.main;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometParameters;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
 import org.yeastrc.limelight.xml.comet_percolator.objects.ConversionParameters;
+import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorResults;
 import org.yeastrc.limelight.xml.comet_percolator.reader.CometParamsReader;
 import org.yeastrc.limelight.xml.comet_percolator.reader.CometPepXMLResultsParser;
+import org.yeastrc.limelight.xml.comet_percolator.reader.PercolatorResultsReader;
 
 public class ConverterRunner {
 
@@ -38,6 +40,10 @@ public class ConverterRunner {
 		
 		System.err.print( "Reading Comet pepXML data into memory..." );
 		CometResults cometResults = CometPepXMLResultsParser.getCometResults( conversionParameters.getPepXMLFile() );
+		System.err.println( " Done." );
+		
+		System.err.print( "Reading Percolator XML data into memory..." );
+		PercolatorResults percResults = PercolatorResultsReader.getPercolatorResults( conversionParameters.getPercolatorXMLFile() );
 		System.err.println( " Done." );
 
 		/*

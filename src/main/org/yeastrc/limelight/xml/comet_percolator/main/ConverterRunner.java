@@ -18,17 +18,19 @@
 
 package org.yeastrc.limelight.xml.comet_percolator.main;
 
+import org.yeastrc.limelight.xml.comet_percolator.builder.XMLBuilder;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometParameters;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
 import org.yeastrc.limelight.xml.comet_percolator.objects.ConversionParameters;
 import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorResults;
 import org.yeastrc.limelight.xml.comet_percolator.reader.CometParamsReader;
 import org.yeastrc.limelight.xml.comet_percolator.reader.CometPepXMLResultsParser;
+import org.yeastrc.limelight.xml.comet_percolator.reader.CometPercolatorValidator;
 import org.yeastrc.limelight.xml.comet_percolator.reader.PercolatorResultsReader;
 
 public class ConverterRunner {
 
-	// quickly get a new instance of this class
+	// conveniently get a new instance of this class
 	public static ConverterRunner createInstance() { return new ConverterRunner(); }
 	
 	
@@ -45,11 +47,15 @@ public class ConverterRunner {
 		System.err.print( "Reading Percolator XML data into memory..." );
 		PercolatorResults percResults = PercolatorResultsReader.getPercolatorResults( conversionParameters.getPercolatorXMLFile() );
 		System.err.println( " Done." );
-
-		/*
-		System.err.print( "Writing out XML..." );
-		(new XMLBuilder()).buildAndSaveXML( conversionParameters, cometResults, cometParams, errorAnalysis );
+		
+		System.err.print( "Verifying all comet results have percolator results..." );
+		if( !CometPercolatorValidator.validateData( cometResults, percResults ) ) {
+			return;
+		}
 		System.err.println( " Done." );
-		*/
+
+		System.err.print( "Writing out XML..." );
+		(new XMLBuilder()).buildAndSaveXML( conversionParameters, cometResults, percResults, cometParams );
+		System.err.println( " Done." );
 	}
 }

@@ -53,6 +53,13 @@ public class PSMDefaultVisibleAnnotationTypes {
 			annotation.setSearchProgram( Constants.PROGRAM_NAME_COMET );
 			annotations.add( annotation );
 		}
+		
+		{
+			SearchAnnotation annotation = new SearchAnnotation();
+			annotation.setAnnotationName( PSMAnnotationTypes.COMET_ANNOTATION_TYPE_HIT_RANK );
+			annotation.setSearchProgram( Constants.PROGRAM_NAME_COMET );
+			annotations.add( annotation );
+		}
 
 		return annotations;
 	}

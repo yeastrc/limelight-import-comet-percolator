@@ -2,6 +2,7 @@ package org.yeastrc.limelight.xml.comet_percolator.builder;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -349,7 +350,14 @@ public class XMLBuilder {
 					xmlFilterablePsmAnnotation.setSearchProgram( Constants.PROGRAM_NAME_COMET );
 					xmlFilterablePsmAnnotation.setValue( psm.getxCorr() );
 				}
+				{
+					FilterablePsmAnnotation xmlFilterablePsmAnnotation = new FilterablePsmAnnotation();
+					xmlFilterablePsmAnnotations.getFilterablePsmAnnotation().add( xmlFilterablePsmAnnotation );
 
+					xmlFilterablePsmAnnotation.setAnnotationName( PSMAnnotationTypes.COMET_ANNOTATION_TYPE_HIT_RANK );
+					xmlFilterablePsmAnnotation.setSearchProgram( Constants.PROGRAM_NAME_COMET );
+					xmlFilterablePsmAnnotation.setValue( BigDecimal.valueOf( psm.getHitRank() ).setScale( 0, RoundingMode.HALF_UP ) );
+				}
 
 				// handle percolator scores
 				PercolatorPSM percolatorPSM = percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptideString ).getPercolatorPSMs().get( scanNumber );

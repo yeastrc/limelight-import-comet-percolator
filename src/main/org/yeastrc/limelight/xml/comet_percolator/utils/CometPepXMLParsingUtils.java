@@ -150,6 +150,7 @@ public class CometPepXMLParsingUtils {
 		psm.setScanNumber( scanNumber );
 		psm.setPrecursorNeutralMass( obsMass );
 		psm.setRetentionTime( retentionTime );
+		psm.setHitRank( getHitRankForSearchHit( searchHit ) );
 		
 		psm.setPeptideSequence( searchHit.getPeptide() );
 		
@@ -171,35 +172,10 @@ public class CometPepXMLParsingUtils {
 		return psm;
 	}
 	
-	/**
-	 * Get a PeptideProphet probability from the supplied searchHit JAXB object
-	 * 
-	 * @param spectrumQuery
-	 * @return
-	 */
-	public static BigDecimal getPeptideProphetProbabilityForSearchHit( SearchHit searchHit ) throws Exception {
+	public static int getHitRankForSearchHit( SearchHit searchHit ) throws Exception {
 		
+		return toIntExact( searchHit.getHitRank() );
 		
-		for( AnalysisResult ar : searchHit.getAnalysisResult() ) {
-			if( ar.getAnalysis().equals( "peptideprophet" ) ) {
-				
-				for( Object o : ar.getAny() ) {
-					
-					try {
-						
-						PeptideprophetResult ppr = (PeptideprophetResult)o;
-						return ppr.getProbability();
-						
-					} catch( Throwable t ) {
-						
-					}
-					
-				}
-				
-			}
-		}
-		
-		return null;
 	}
 	
 	/**

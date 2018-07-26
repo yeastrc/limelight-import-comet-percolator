@@ -37,6 +37,7 @@ public class PSMAnnotationTypes {
 	public static final String COMET_ANNOTATION_TYPE_SPSCORE = "Sp Score";
 	public static final String COMET_ANNOTATION_TYPE_SPRANK = "Sp Rank";
 	public static final String COMET_ANNOTATION_TYPE_EXPECT = "E-Value";
+	public static final String COMET_ANNOTATION_TYPE_HIT_RANK = "Hit Rank";
 	
 	// percolator scores
 	public static final String PERCOLATOR_ANNOTATION_TYPE_QVALUE = "q-value";
@@ -100,6 +101,16 @@ public class PSMAnnotationTypes {
 				type.setName( COMET_ANNOTATION_TYPE_EXPECT );
 				type.setDescription( "The e-value, or the estimation of the chance of observing a hit of this quality by chance." );
 				type.setFilterDirection( FilterDirectionType.BELOW );
+				
+				types.add( type );
+			}
+			
+			{
+				FilterablePsmAnnotationType type = new FilterablePsmAnnotationType();
+				type.setName( COMET_ANNOTATION_TYPE_HIT_RANK );
+				type.setDescription( "The rank of this PSM for this scan. Rank 1 means highest scoring hit." );
+				type.setFilterDirection( FilterDirectionType.BELOW );
+				type.setDefaultFilterValue( BigDecimal.valueOf( 1 ) );
 				
 				types.add( type );
 			}

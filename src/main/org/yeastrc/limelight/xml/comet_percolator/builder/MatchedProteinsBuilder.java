@@ -12,7 +12,6 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProtein;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinLabel;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteins;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometReportedPeptide;
-import org.yeastrc.limelight.xml.comet_percolator.utils.ProteinInferenceUtils;
 import org.yeastrc.fasta.FASTAEntry;
 import org.yeastrc.fasta.FASTAHeader;
 import org.yeastrc.fasta.FASTAReader;
@@ -149,6 +148,9 @@ public class MatchedProteinsBuilder {
 				count++;
 				boolean foundPeptideForFASTAEntry = false;
 				
+				// use this sequence to determine if it contains a peptide sequence
+				String fastaSequence = entry.getSequence().replaceAll( "L", "I" );
+				
 				System.err.print( "\tTested " + count + " FASTA entries...\r" );
 				
 				for( PeptideObject nakedPeptideObject : nakedPeptideObjects ) {
@@ -160,10 +162,14 @@ public class MatchedProteinsBuilder {
 						continue;
 					}
 					
-					String nakedSequence = nakedPeptideObject.getPeptideSequence();
+					if( nakedPeptideObject.getSearchSequence() == null ) {
+						nakedPeptideObject.setSearchSequence( nakedPeptideObject.getPeptideSequence().replaceAll( "L", "I" ) );
+					}
+					
+					String peptideSearchSequence = nakedPeptideObject.getSearchSequence();
 					
 					
-					if( ProteinInferenceUtils.proteinContainsReportedPeptide( entry.getSequence(), nakedSequence ) ) {
+					if( fastaSequence.contains( peptideSearchSequence ) ) {
 						
 						// this protein has a matching peptide
 						
@@ -232,7 +238,9 @@ public class MatchedProteinsBuilder {
 	private class PeptideObject {
 		
 		private String peptideSequence;
+		private String searchSequence;
 		private boolean foundMatchingProtein;
+		
 		/* (non-Javadoc)
 		 * @see java.lang.Object#hashCode()
 		 */
@@ -297,6 +305,20 @@ public class MatchedProteinsBuilder {
 		 */
 		public void setFoundMatchingProtein(boolean foundMatchingProtein) {
 			this.foundMatchingProtein = foundMatchingProtein;
+		}
+
+		/**
+		 * @return the searchSequence
+		 */
+		public String getSearchSequence() {
+			return searchSequence;
+		}
+
+		/**
+		 * @param searchSequence the searchSequence to set
+		 */
+		public void setSearchSequence(String searchSequence) {
+			this.searchSequence = searchSequence;
 		}		
 		
 	}

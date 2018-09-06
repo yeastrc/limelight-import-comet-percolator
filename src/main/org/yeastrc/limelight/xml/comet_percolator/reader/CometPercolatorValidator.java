@@ -15,7 +15,7 @@ public class CometPercolatorValidator {
 
 			// ensure all peptides found by comet are in percolator results
 			if( !percolatorResults.getReportedPeptideResults().containsKey( percolatorReportedPeptide ) ) {
-				System.err.println( "Error: Percolator results not found for peptide: percolatorReportedPeptide" );
+				System.err.println( "Error: Percolator results not found for peptide: " + percolatorReportedPeptide );
 				return false;
 			}
 			

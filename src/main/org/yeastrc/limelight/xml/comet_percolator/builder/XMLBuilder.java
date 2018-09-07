@@ -56,9 +56,7 @@ import org.yeastrc.limelight.xml.comet_percolator.objects.ConversionParameters;
 import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorPSM;
 import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorPeptideData;
 import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorResults;
-import org.yeastrc.limelight.xml.comet_percolator.utils.CometPercolatorUtils;
-
-
+import org.yeastrc.limelight.xml.comet_percolator.utils.CometParsingUtils;
 
 public class XMLBuilder {
 
@@ -199,9 +197,6 @@ public class XMLBuilder {
 			}
 		}
 		
-		// cache of FDRs calculated for specific PSM probabilities
-		Map<BigDecimal, BigDecimal> psmFDRCache = new HashMap<>();
-		
 		//
 		// Define the peptide and PSM data
 		//
@@ -209,16 +204,17 @@ public class XMLBuilder {
 		limelightInputRoot.setReportedPeptides( reportedPeptides );
 		
 		// iterate over each distinct reported peptide
-		for( CometReportedPeptide cometReportedPeptide : cometResults.getPeptidePSMMap().keySet() ) {
-						
+		for( String percolatorReportedPeptide : percolatorResults.getReportedPeptideResults().keySet() ) {
+			
+			CometReportedPeptide cometReportedPeptide = CometParsingUtils.getCometReportedPeptideForString( percolatorReportedPeptide, cometResults );
+			
 			ReportedPeptide xmlReportedPeptide = new ReportedPeptide();
 			reportedPeptides.getReportedPeptide().add( xmlReportedPeptide );
 			
 			xmlReportedPeptide.setReportedPeptideString( cometReportedPeptide.getReportedPeptideString() );
 			xmlReportedPeptide.setSequence( cometReportedPeptide.getNakedPeptide() );
 			
-			String percolatorReportedPeptideString = CometPercolatorUtils.getPercolatorReportedPeptideForCometPeptide( cometReportedPeptide );
-			PercolatorPeptideData percolatorPeptideData = percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptideString );
+			PercolatorPeptideData percolatorPeptideData = percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptide );
 			
 			// add in the filterable peptide annotations (e.g., q-value)
 			ReportedPeptideAnnotations xmlReportedPeptideAnnotations = new ReportedPeptideAnnotations();
@@ -287,7 +283,7 @@ public class XMLBuilder {
 
 			// iterate over all PSMs for this reported peptide
 
-			for( int scanNumber : cometResults.getPeptidePSMMap().get( cometReportedPeptide ).keySet() ) {
+			for( int scanNumber : percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptide ).getPercolatorPSMs().keySet() ) {
 
 				CometPSM psm = cometResults.getPeptidePSMMap().get( cometReportedPeptide ).get( scanNumber );
 
@@ -360,7 +356,7 @@ public class XMLBuilder {
 				}
 
 				// handle percolator scores
-				PercolatorPSM percolatorPSM = percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptideString ).getPercolatorPSMs().get( scanNumber );
+				PercolatorPSM percolatorPSM = percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptide ).getPercolatorPSMs().get( scanNumber );
 				{
 					FilterablePsmAnnotation xmlFilterablePsmAnnotation = new FilterablePsmAnnotation();
 					xmlFilterablePsmAnnotations.getFilterablePsmAnnotation().add( xmlFilterablePsmAnnotation );

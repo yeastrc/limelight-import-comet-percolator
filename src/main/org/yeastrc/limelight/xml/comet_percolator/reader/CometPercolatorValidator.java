@@ -3,32 +3,40 @@ package org.yeastrc.limelight.xml.comet_percolator.reader;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometReportedPeptide;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
 import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorResults;
-import org.yeastrc.limelight.xml.comet_percolator.utils.CometPercolatorUtils;
+import org.yeastrc.limelight.xml.comet_percolator.utils.CometParsingUtils;
 
 public class CometPercolatorValidator {
 
+	/**
+	 * Ensure all percolator results have a result in the comet data
+	 * 
+	 * @param cometResults
+	 * @param percolatorResults
+	 * @return
+	 * @throws Exception
+	 */
 	public static boolean validateData( CometResults cometResults, PercolatorResults percolatorResults ) throws Exception {
 		
-		for( CometReportedPeptide cometPeptide : cometResults.getPeptidePSMMap().keySet() ) {
+		for( String percolatorReportedPeptide : percolatorResults.getReportedPeptideResults().keySet() ) {
 			
-			String percolatorReportedPeptide = CometPercolatorUtils.getPercolatorReportedPeptideForCometPeptide( cometPeptide );
+			CometReportedPeptide cometReportedPeptide = CometParsingUtils.getCometReportedPeptideForString( percolatorReportedPeptide, cometResults );
 
-			// ensure all peptides found by comet are in percolator results
-			if( !percolatorResults.getReportedPeptideResults().containsKey( percolatorReportedPeptide ) ) {
-				System.err.println( "Error: Percolator results not found for peptide: " + percolatorReportedPeptide );
+			if( cometReportedPeptide == null ) {
+				System.err.println( "Error: Comet results not found for peptide: " + percolatorReportedPeptide );
 				return false;
 			}
 			
-			// ensure all scans found by comet for each peptide are scored by percolator
-			for( int scanNumber : cometResults.getPeptidePSMMap().get( cometPeptide ).keySet() ) {
+			for( int scanNumber : percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptide ).getPercolatorPSMs().keySet() ) {
 				
-				if( !percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptide ).getPercolatorPSMs().containsKey( scanNumber ) ) {
+				if( !cometResults.getPeptidePSMMap().get( cometReportedPeptide ).containsKey( scanNumber ) ) {
 					System.err.println( "Error: Could not find PSM data for scan number " + scanNumber + " in percolator results for peptide: " + percolatorReportedPeptide );
 					return false;
-				}				
+				}
 			}
+			
 		}
 		
 		return true;
 	}
+	
 }

@@ -48,7 +48,7 @@ public class ConverterRunner {
 		PercolatorResults percResults = PercolatorResultsReader.getPercolatorResults( conversionParameters.getPercolatorXMLFile() );
 		System.err.println( " Done." );
 		
-		System.err.print( "Verifying all comet results have percolator results..." );
+		System.err.print( "Verifying all percolator results have comet results..." );
 		if( !CometPercolatorValidator.validateData( cometResults, percResults ) ) {
 			return;
 		}

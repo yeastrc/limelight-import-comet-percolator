@@ -37,7 +37,7 @@ public class ReportedPeptideUtils {
 		    
 		    if( mods.containsKey( position ) ) {
 		    	
-		    	BigDecimal v = mods.get( position ).setScale( 2, RoundingMode.HALF_UP );
+		    	BigDecimal v = mods.get( position ).setScale( 4, RoundingMode.HALF_UP );
 		    	sb.append( "[" );
 		    	sb.append( v.toString() );
 		    	sb.append( "]" );

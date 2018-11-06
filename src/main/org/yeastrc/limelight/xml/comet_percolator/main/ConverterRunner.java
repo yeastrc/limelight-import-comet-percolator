@@ -34,7 +34,7 @@ public class ConverterRunner {
 	public static ConverterRunner createInstance() { return new ConverterRunner(); }
 	
 	
-	public void convertCometTPPToLimelightXML( ConversionParameters conversionParameters ) throws Throwable {
+	public void convertCometPercolatorToLimelightXML(ConversionParameters conversionParameters ) throws Throwable {
 	
 		System.err.print( "Reading comet params into memory..." );
 		CometParameters cometParams = CometParamsReader.getCometParameters( conversionParameters.getCometParametersFile() );
@@ -49,9 +49,7 @@ public class ConverterRunner {
 		System.err.println( " Done." );
 		
 		System.err.print( "Verifying all percolator results have comet results..." );
-		if( !CometPercolatorValidator.validateData( cometResults, percResults ) ) {
-			return;
-		}
+		CometPercolatorValidator.validateData( cometResults, percResults );
 		System.err.println( " Done." );
 
 		System.err.print( "Writing out XML..." );

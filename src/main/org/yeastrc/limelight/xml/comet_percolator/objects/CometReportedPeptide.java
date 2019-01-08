@@ -1,6 +1,7 @@
 package org.yeastrc.limelight.xml.comet_percolator.objects;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Map;
 
 public class CometReportedPeptide {
@@ -38,7 +39,15 @@ public class CometReportedPeptide {
 	private String reportedPeptideString;
 	private String nakedPeptide;
 	private Map<Integer, BigDecimal> mods;
-	
+
+	public Collection<String> getProteinMatches() {
+		return proteinMatches;
+	}
+
+	public void setProteinMatches(Collection<String> proteinMatches) {
+		this.proteinMatches = proteinMatches;
+	}
+
 	/**
 	 * @return the reportedPeptideString
 	 */
@@ -75,7 +84,8 @@ public class CometReportedPeptide {
 	public void setMods(Map<Integer, BigDecimal> mods) {
 		this.mods = mods;
 	}
-	
+
+	public Collection<String> proteinMatches;
 	
 	
 }

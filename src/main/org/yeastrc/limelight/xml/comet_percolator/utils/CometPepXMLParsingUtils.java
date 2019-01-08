@@ -4,7 +4,9 @@ import static java.lang.Math.toIntExact;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -233,6 +235,25 @@ public class CometPepXMLParsingUtils {
 
 		
 		return modMap;
+	}
+
+	public static Collection<String> getProteinNamesForSearchHit(SearchHit searchHit ) throws Throwable {
+
+		Collection<String> proteins = new HashSet<>();
+
+		if( searchHit.getProtein() != null ) {
+			proteins.add( searchHit.getProtein());
+		}
+
+		if( searchHit.getAlternativeProtein() != null && searchHit.getAlternativeProtein().size() > 0 ) {
+
+			for( AltProteinDataType apdt : searchHit.getAlternativeProtein() ) {
+				proteins.add( apdt.getProtein() );
+			}
+
+		}
+
+		return proteins;
 	}
 
 

@@ -1,6 +1,7 @@
 package org.yeastrc.limelight.xml.comet_percolator.objects;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Map;
 
 public class CometPSM {
@@ -18,13 +19,44 @@ public class CometPSM {
 	private BigDecimal precursorNeutralMass;
 	private int charge;
 	private BigDecimal retentionTime;
-	
+
+	@Override
+	public String toString() {
+		return "CometPSM{" +
+				"xCorr=" + xCorr +
+				", deltaCn=" + deltaCn +
+				", deltaCnStar=" + deltaCnStar +
+				", spScore=" + spScore +
+				", spRank=" + spRank +
+				", eValue=" + eValue +
+				", hitRank=" + hitRank +
+				", scanNumber=" + scanNumber +
+				", precursorNeutralMass=" + precursorNeutralMass +
+				", charge=" + charge +
+				", retentionTime=" + retentionTime +
+				", peptideSequence='" + peptideSequence + '\'' +
+				", modifications=" + modifications +
+				", fdr=" + fdr +
+				", proteinNames=" + proteinNames +
+				'}';
+	}
+
 	private String peptideSequence;
 	
 	private Map<Integer,BigDecimal> modifications;
 	
 	private BigDecimal fdr;
-	
+
+	private Collection<String> proteinNames;
+
+	public Collection<String> getProteinNames() {
+		return proteinNames;
+	}
+
+	public void setProteinNames(Collection<String> proteinNames) {
+		this.proteinNames = proteinNames;
+	}
+
 	/**
 	 * @return the xCorr
 	 */

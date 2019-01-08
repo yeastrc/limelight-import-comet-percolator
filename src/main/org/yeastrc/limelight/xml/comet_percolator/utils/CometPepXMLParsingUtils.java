@@ -25,6 +25,7 @@ import net.systemsbiology.regis_web.pepxml.MsmsPipelineAnalysis.MsmsRunSummary.S
 import net.systemsbiology.regis_web.pepxml.MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery;
 import net.systemsbiology.regis_web.pepxml.MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery.SearchResult.SearchHit;
 import net.systemsbiology.regis_web.pepxml.MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery.SearchResult.SearchHit.AnalysisResult;
+import org.yeastrc.limelight.xml.comet_percolator.objects.CometParameters;
 
 public class CometPepXMLParsingUtils {
 
@@ -56,14 +57,16 @@ public class CometPepXMLParsingUtils {
 	 * @param searchHit
 	 * @return
 	 */
-	public static boolean searchHitIsDecoy( SearchHit searchHit ) {
+	public static boolean searchHitIsDecoy( SearchHit searchHit, CometParameters cometParams ) {
 		
 		String protein = searchHit.getProtein();
-		if( protein.startsWith( "DECOY_" ) ) {
-			
+
+		if( CometParsingUtils.isDecoyProtein( protein, cometParams ) ) {
+
 			if( searchHit.getAlternativeProtein() != null ) {
 				for( AltProteinDataType ap : searchHit.getAlternativeProtein() ) {
-					if( !ap.getProtein().startsWith( "DECOY_" ) ) {
+
+					if( !CometParsingUtils.isDecoyProtein( ap.getProtein(), cometParams ) ) {
 						return false;
 					}
 				}
@@ -149,7 +152,8 @@ public class CometPepXMLParsingUtils {
 			int charge,
 			int scanNumber,
 			BigDecimal obsMass,
-			BigDecimal retentionTime ) throws Throwable {
+			BigDecimal retentionTime,
+			CometParameters cometParams ) throws Throwable {
 				
 		CometPSM psm = new CometPSM();
 		
@@ -167,12 +171,28 @@ public class CometPepXMLParsingUtils {
 		psm.setSpScore( getScoreForType( searchHit, "spscore" ) );
 		psm.setSpRank( getScoreForType( searchHit, "sprank" ) );
 		psm.seteValue( getScoreForType( searchHit, "expect" ) );
-		
+
+		try {
+			psm.setProteinNames( getProteinNamesForSearchHit( searchHit, cometParams ) );
+		} catch( Throwable t ) {
+
+			String error = "Error getting protein names for PSM.\n";
+			error += "Psm: " + psm + "\n";
+			error += "Error: " + t.getMessage();
+
+			System.err.println( error );
+			throw t;
+		}
+
 		try {
 			psm.setModifications( getModificationsForSearchHit( searchHit ) );
 		} catch( Throwable t ) {
-			
-			System.err.println( "Error getting mods for PSM. Error was: " + t.getMessage() );
+
+			String error = "Error getting mods for PSM.\n";
+			error += "Psm: " + psm + "\n";
+			error += "Error: " + t.getMessage();
+
+			System.err.println( error );
 			throw t;
 		}
 		
@@ -184,12 +204,14 @@ public class CometPepXMLParsingUtils {
 		return toIntExact( searchHit.getHitRank() );
 		
 	}
-	
+
 	/**
 	 * Get the requested score from the searchHit JAXB object
-	 * 
-	 * @param spectrumQuery
+	 *
+	 * @param searchHit
+	 * @param type
 	 * @return
+	 * @throws Throwable
 	 */
 	public static BigDecimal getScoreForType( SearchHit searchHit, String type ) throws Throwable {
 		
@@ -202,12 +224,13 @@ public class CometPepXMLParsingUtils {
 		
 		throw new Exception( "Could not find a score of name: " + type + " for PSM..." );		
 	}
-	
+
 	/**
 	 * Get the variable modifications from the supplied searchHit JAXB object
-	 * 
-	 * @param spectrumQuery
+	 *
+	 * @param searchHit
 	 * @return
+	 * @throws Throwable
 	 */
 	public static Map<Integer, BigDecimal> getModificationsForSearchHit( SearchHit searchHit ) throws Throwable {
 		
@@ -237,20 +260,26 @@ public class CometPepXMLParsingUtils {
 		return modMap;
 	}
 
-	public static Collection<String> getProteinNamesForSearchHit(SearchHit searchHit ) throws Throwable {
+	public static Collection<String> getProteinNamesForSearchHit(SearchHit searchHit, CometParameters cometParams ) throws Throwable {
 
 		Collection<String> proteins = new HashSet<>();
 
-		if( searchHit.getProtein() != null ) {
+		if( searchHit.getProtein() != null && !CometParsingUtils.isDecoyProtein( searchHit.getProtein(), cometParams ) ) {
 			proteins.add( searchHit.getProtein());
 		}
 
 		if( searchHit.getAlternativeProtein() != null && searchHit.getAlternativeProtein().size() > 0 ) {
 
 			for( AltProteinDataType apdt : searchHit.getAlternativeProtein() ) {
-				proteins.add( apdt.getProtein() );
+				if( !CometParsingUtils.isDecoyProtein( apdt.getProtein(), cometParams ) ) {
+					proteins.add( apdt.getProtein() );
+				}
 			}
 
+		}
+
+		if( proteins.size() < 1 ) {
+			throw new Exception( "Found zero target proteins for searchHit." );
 		}
 
 		return proteins;

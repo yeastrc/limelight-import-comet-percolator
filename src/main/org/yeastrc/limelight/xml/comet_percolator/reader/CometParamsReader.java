@@ -31,8 +31,11 @@ public class CometParamsReader {
 		try ( InputStream is = new FileInputStream( paramsFile ) ) {
 			magParams.setStaticMods( getStaticModsFromParamsFile( is ) );
 		}
-		
-		
+
+		try ( InputStream is = new FileInputStream( paramsFile ) ) {
+			magParams.setDecoyPrefix( getDecoyPrefix( is ) );
+		}
+
 		return magParams;
 	}
 	
@@ -67,8 +70,6 @@ public class CometParamsReader {
 
 	public static String getDecoyPrefix( InputStream paramsInputStream) throws IOException {
 
-		String decoyPrefix = null;
-
 		try (BufferedReader br = new BufferedReader( new InputStreamReader( paramsInputStream ) ) ) {
 
 			for ( String line = br.readLine(); line != null; line = br.readLine() ) {
@@ -79,14 +80,16 @@ public class CometParamsReader {
 
 				Pattern p = Pattern.compile( "^decoy_prefix\\s+=\\s+(\\S+).*$" );
 
+				Matcher m = p.matcher( line );
+				if( m.matches() ) {
+					return m.group( 1 );
+				}
+
 			}
 
 		}
 
-
-
-		return decoyPrefix;
-
+		return null;
 	}
 	
 }

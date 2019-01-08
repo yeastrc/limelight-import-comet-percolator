@@ -1,6 +1,7 @@
 package org.yeastrc.limelight.xml.comet_percolator.utils;
 
 import org.yeastrc.limelight.xml.comet_percolator.constants.CometConstants;
+import org.yeastrc.limelight.xml.comet_percolator.objects.CometParameters;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometReportedPeptide;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
 
@@ -41,13 +42,45 @@ public class CometParsingUtils {
 		return reportedModMass.subtract( CometConstants.COMET_MASS_HYDROGEN_MONO ).subtract( CometConstants.COMET_MASS_OXYGEN_MONO );
 	}
 
+	/**
+	 * Return true if the mod at the reported position is an N-terminal mod in that peptide
+	 *
+	 * @param peptide
+	 * @param position
+	 * @return
+	 */
 	public static boolean isNTerminalMod( String peptide, int position ) {
 		if( position == 0 ) { return true; }
 		return false;
 	}
 
+	/**
+	 * Return true if the mod at the reported position is a C-terminal mod in that peptide
+	 *
+	 * @param peptide
+	 * @param position
+	 * @return
+	 */
 	public static boolean isCTerminalMod( String peptide, int position ) {
 		if( position == peptide.length() + 1 ) { return true; }
+		return false;
+	}
+
+	/**
+	 * Return true if the given protein name is a decoy protein hit, given the comet parameters
+	 * used in the search.
+	 *
+	 * @param proteinName
+	 * @param cometParams
+	 * @return
+	 */
+	public static boolean isDecoyProtein(String proteinName, CometParameters cometParams ) {
+		if( cometParams.getDecoyPrefix() != null ) {
+			if( proteinName.startsWith( cometParams.getDecoyPrefix() ) ) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 

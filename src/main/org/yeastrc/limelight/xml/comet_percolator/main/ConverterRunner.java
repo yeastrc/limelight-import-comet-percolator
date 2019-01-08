@@ -41,7 +41,7 @@ public class ConverterRunner {
 		System.err.println( " Done." );
 		
 		System.err.print( "Reading Comet pepXML data into memory..." );
-		CometResults cometResults = CometPepXMLResultsParser.getCometResults( conversionParameters.getPepXMLFile() );
+		CometResults cometResults = CometPepXMLResultsParser.getCometResults( conversionParameters.getPepXMLFile(), cometParams );
 		System.err.println( " Done." );
 		
 		System.err.print( "Reading Percolator XML data into memory..." );

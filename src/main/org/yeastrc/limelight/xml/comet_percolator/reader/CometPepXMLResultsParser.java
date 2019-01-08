@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometPSM;
+import org.yeastrc.limelight.xml.comet_percolator.objects.CometParameters;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometReportedPeptide;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
 import org.yeastrc.limelight.xml.comet_percolator.utils.CometPepXMLParsingUtils;
@@ -42,7 +43,7 @@ import net.systemsbiology.regis_web.pepxml.MsmsPipelineAnalysis.MsmsRunSummary.S
  */
 public class CometPepXMLResultsParser {
 
-	public static CometResults getCometResults( File pepXMLFile ) throws Throwable {
+	public static CometResults getCometResults( File pepXMLFile, CometParameters cometParams ) throws Throwable {
 
 		Map<CometReportedPeptide,Map<Integer,CometPSM>> resultMap = new HashMap<>();
 				
@@ -73,7 +74,7 @@ public class CometPepXMLResultsParser {
 					for( SearchHit searchHit : searchResult.getSearchHit() ) {
 						
 						// do not include decoy hits
-						if( CometPepXMLParsingUtils.searchHitIsDecoy( searchHit ) ) {
+						if( CometPepXMLParsingUtils.searchHitIsDecoy( searchHit, cometParams ) ) {
 							continue;
 						}
 						
@@ -81,7 +82,7 @@ public class CometPepXMLResultsParser {
 						
 						try {
 							
-							psm = CometPepXMLParsingUtils.getPsmFromSearchHit( searchHit, charge, scanNumber, neutralMass, retentionTime );
+							psm = CometPepXMLParsingUtils.getPsmFromSearchHit( searchHit, charge, scanNumber, neutralMass, retentionTime, cometParams  );
 							
 						} catch( Throwable t) {
 							

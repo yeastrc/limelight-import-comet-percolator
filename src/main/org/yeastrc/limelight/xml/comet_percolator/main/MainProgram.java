@@ -105,12 +105,12 @@ public class MainProgram {
 		cp.setPercolatorXMLFile( percXMLFile );
 		cp.setLimelightXMLOutputFile( new File( outFilePath ) );
 
-		try {
+		//try {
 			ConverterRunner.createInstance().convertCometPercolatorToLimelightXML(cp);
-		} catch( Throwable t ) {
-			System.err.println( "Encountered error during conversion: " + t.getMessage() );
-			System.exit( 1 );
-		}
+//		} catch( Throwable t ) {
+//			System.err.println( "Encountered error during conversion: " + t.getMessage() );
+//			System.exit( 1 );
+//		}
 
 		System.exit( 0 );
 	}

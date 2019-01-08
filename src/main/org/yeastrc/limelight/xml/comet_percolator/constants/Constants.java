@@ -7,6 +7,6 @@ public class Constants {
 	
 	public static final String CONVERSION_PROGRAM_NAME = "cometPercolator2LimelightXML.jar";
 	public static final String CONVERSION_PROGRAM_URI = "https://github.com/yeastrc/limelight-import-comet-percolator";
-	public static final String CONVERSION_PROGRAM_VERSION = "1.1.1";
+	public static final String CONVERSION_PROGRAM_VERSION = "1.2.0";
 	
 }

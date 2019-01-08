@@ -128,15 +128,20 @@ public class CometPepXMLParsingUtils {
 	public static int getChargeFromSpectrumQuery( SpectrumQuery spectrumQuery ) {
 		return spectrumQuery.getAssumedCharge().intValue();
 	}
-	
-	/**
-	 * Get a TPPPSM (psm object) from the supplied searchHit JAXB object.
-	 * 
-	 * If the searchHit has no peptideprophet score, null is returned.
-	 * 
-	 * @param spectrumQuery
-	 * @return
-	 */
+
+    /**
+     * Get a TPPPSM (psm object) from the supplied searchHit JAXB object.
+     *
+     * If the searchHit has no peptideprophet score, null is returned.
+     *
+     * @param searchHit
+     * @param charge
+     * @param scanNumber
+     * @param obsMass
+     * @param retentionTime
+     * @return
+     * @throws Throwable
+     */
 	public static CometPSM getPsmFromSearchHit(
 			SearchHit searchHit,
 			int charge,
@@ -214,10 +219,22 @@ public class CometPepXMLParsingUtils {
 					modMap.put( mod.getPosition().intValueExact(), BigDecimal.valueOf( mod.getVariable() ) );
 				}
 			}
+
+			// set n-term mod at position 0
+			if( mofo.getModNtermMass() != null ) {
+				modMap.put( 0, CometParsingUtils.getNTerminalModMass( BigDecimal.valueOf( mofo.getModNtermMass() ) ) );
+			}
+
+			// set c-term mod at peptide_length + 1
+			if( mofo.getModCtermMass() != null ) {
+				modMap.put( searchHit.getPeptide().length() + 1, CometParsingUtils.getCTerminalModMass( BigDecimal.valueOf( mofo.getModNtermMass() ) ) );
+			}
 		}
+
 		
 		return modMap;
 	}
-	
+
+
 	
 }

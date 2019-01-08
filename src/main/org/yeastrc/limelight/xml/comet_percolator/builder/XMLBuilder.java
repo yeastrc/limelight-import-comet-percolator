@@ -267,12 +267,24 @@ public class XMLBuilder {
 				PeptideModifications xmlModifications = new PeptideModifications();
 				xmlReportedPeptide.setPeptideModifications( xmlModifications );
 					
-				for( int position :cometReportedPeptide.getMods().keySet() ) {
+				for( int position : cometReportedPeptide.getMods().keySet() ) {
+
 					PeptideModification xmlModification = new PeptideModification();
 					xmlModifications.getPeptideModification().add( xmlModification );
-							
+
 					xmlModification.setMass( cometReportedPeptide.getMods().get( position ) );
-					xmlModification.setPosition( BigInteger.valueOf( position ) );
+
+					if( CometParsingUtils.isNTerminalMod( cometReportedPeptide.getNakedPeptide(), position ) ) {
+
+						xmlModification.setIsNTerminal( true );
+
+					} else if( CometParsingUtils.isCTerminalMod( cometReportedPeptide.getNakedPeptide(), position ) ) {
+
+						xmlModification.setIsCTerminal( true );
+
+					} else {
+						xmlModification.setPosition( BigInteger.valueOf( position ) );
+					}
 				}
 			}
 

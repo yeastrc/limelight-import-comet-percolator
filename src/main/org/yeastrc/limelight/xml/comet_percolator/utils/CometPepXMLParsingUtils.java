@@ -195,7 +195,7 @@ public class CometPepXMLParsingUtils {
 			System.err.println( error );
 			throw t;
 		}
-		
+
 		return psm;
 	}
 	

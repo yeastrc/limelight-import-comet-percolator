@@ -8,38 +8,10 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.yeastrc.limelight.limelight_import.api.xml_dto.AnnotationSortOrder;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.ConfigurationFile;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.ConfigurationFiles;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.DefaultVisibleAnnotations;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterablePsmAnnotation;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterablePsmAnnotationType;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterablePsmAnnotationTypes;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterablePsmAnnotations;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotation;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotationType;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotationTypes;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotations;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideModification;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideModifications;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.Psm;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.PsmAnnotationSortOrder;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.Psms;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptideAnnotationSortOrder;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.*;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide.ReportedPeptideAnnotations;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptides;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchAnnotation;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchProgram;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchProgram.PsmAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchProgram.ReportedPeptideAnnotationTypes;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchProgramInfo;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchPrograms;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.StaticModification;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.StaticModifications;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.VisiblePsmAnnotations;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.VisibleReportedPeptideAnnotations;
 import org.yeastrc.limelight.limelight_import.create_import_file_from_java_objects.main.CreateImportFileFromJavaObjectsMain;
 import org.yeastrc.limelight.xml.comet_percolator.annotation.PSMAnnotationTypeSortOrder;
 import org.yeastrc.limelight.xml.comet_percolator.annotation.PSMAnnotationTypes;
@@ -196,7 +168,19 @@ public class XMLBuilder {
 				smods.getStaticModification().add( xmlSmod );
 			}
 		}
-		
+
+
+
+		//
+		// Build MatchedProteins section and get map of protein names to MatchedProtein ids
+		//
+		Map<String, Integer> proteinNameIds = MatchedProteinsBuilder.getInstance().buildMatchedProteins(
+				limelightInputRoot,
+				conversionParameters.getFastaFile(),
+				cometResults.getPeptidePSMMap().keySet()
+		);
+
+
 		//
 		// Define the peptide and PSM data
 		//
@@ -213,7 +197,21 @@ public class XMLBuilder {
 			
 			xmlReportedPeptide.setReportedPeptideString( cometReportedPeptide.getReportedPeptideString() );
 			xmlReportedPeptide.setSequence( cometReportedPeptide.getNakedPeptide() );
-			
+
+			MatchedProteinsForPeptide xProteinsForPeptide = new MatchedProteinsForPeptide();
+			xmlReportedPeptide.setMatchedProteinsForPeptide( xProteinsForPeptide );
+
+			// add in protein inference info
+			for( String proteinName : cometReportedPeptide.getProteinMatches() ) {
+
+				int matchedProteinId = proteinNameIds.get( proteinName );
+
+				MatchedProteinForPeptide xProteinForPeptide = new MatchedProteinForPeptide();
+				xProteinsForPeptide.getMatchedProteinForPeptide().add( xProteinForPeptide );
+
+				xProteinForPeptide.setId( BigInteger.valueOf( matchedProteinId ) );
+			}
+
 			PercolatorPeptideData percolatorPeptideData = percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptide );
 			
 			// add in the filterable peptide annotations (e.g., q-value)
@@ -406,13 +404,6 @@ public class XMLBuilder {
 		
 		}//end iterating over reported peptides
 
-		
-		// add in the matched proteins section
-		MatchedProteinsBuilder.getInstance().buildMatchedProteins(
-				                                                   limelightInputRoot,
-				                                                   conversionParameters.getFastaFile(),
-				                                                   cometResults.getPeptidePSMMap().keySet()
-				                                                  );
 		
 		
 		// add in the config file(s)

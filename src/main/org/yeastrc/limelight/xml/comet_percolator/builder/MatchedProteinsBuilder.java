@@ -81,8 +81,23 @@ public class MatchedProteinsBuilder {
 	
 	
 	/* ***************** REST OF THIS CAN BE MOVED TO CENTRALIZED LIB **************************** */
-	
-	
+
+	/**
+	 * Given a FASTA filename and a list of results (that include protein names from that FASTA for each peptide
+	 * identification), added the MatchedProteins section to the XML document, and return a mapping of the protein names
+	 * to the id number that identifies the sequence for that protein name.
+	 *
+	 * @param limelightInputRoot
+	 * @param proteins
+	 * @return
+	 * @throws Exception
+	 */
+	private Map<String,Integer> buildAndAddMatchedProteinsToXMLUsingProteinInference( LimelightInput limelightInputRoot,
+																	   Map<String, Collection<FastaProteinAnnotation>> proteins ) throws Exception {
+
+		return null;
+	}
+
 	
 	/**
 	 * Do the work of building the matched peptides element and adding to limelight xml root
@@ -91,7 +106,8 @@ public class MatchedProteinsBuilder {
 	 * @param proteins
 	 * @throws Exception
 	 */
-	private void buildAndAddMatchedProteinsToXML( LimelightInput limelightInputRoot, Map<String, Collection<FastaProteinAnnotation>> proteins ) throws Exception {
+	private void buildAndAddMatchedProteinsToXML( LimelightInput limelightInputRoot,
+												  Map<String, Collection<FastaProteinAnnotation>> proteins ) throws Exception {
 		
 		MatchedProteins xmlMatchedProteins = new MatchedProteins();
 		limelightInputRoot.setMatchedProteins( xmlMatchedProteins );

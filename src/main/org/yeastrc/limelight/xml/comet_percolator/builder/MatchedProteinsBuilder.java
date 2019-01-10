@@ -53,9 +53,16 @@ public class MatchedProteinsBuilder {
 		// find the proteins matched by any of these peptides (map of sequence => fasta annotations
 		Map<String, MatchedProteinInformation> proteins = getProteinsUsingProteinNames( proteinNames, fastaFile );
 
+		{
+			Collection<String> proteinNamesNotFoundInFasta = getProteinNamesNotFoundInFasta(proteinNames, proteins);
+			if (proteinNamesNotFoundInFasta.size() > 0) {
+				throw new Exception("The following protein names were not found in FASTA: " + String.join(", ", proteinNamesNotFoundInFasta));
+			}
+		}
+
 		// map and validate protein names to protein sequence ids
 		Map<String, Integer> proteinNameIdMap = getMatchedProteinIdsForProteinNames( proteins, proteinNames );
-		
+
 		// create the XML and add to root element
 		buildAndAddMatchedProteinsToXML( limelightInputRoot, proteins );
 
@@ -83,6 +90,38 @@ public class MatchedProteinsBuilder {
 	
 	
 	/* ***************** REST OF THIS CAN BE MOVED TO CENTRALIZED LIB **************************** */
+
+
+	private Collection<String> getProteinNamesNotFoundInFasta( Collection<String> proteinNames, Map<String, MatchedProteinInformation>  proteinFastaAnnotations ) {
+
+		Collection<String> proteins = new HashSet<>();
+
+		for( String proteinName : proteinNames ) {
+
+			boolean found = false;
+
+			for( MatchedProteinInformation mpi :proteinFastaAnnotations.values() ) {
+
+				for( FastaProteinAnnotation anno : mpi.getFastaProteinAnnotations() ) {
+
+					if( anno.getName().equals( proteinName ) ) {
+						found = true;
+						break;
+					}
+
+				}
+
+			}
+
+			if( !found ) {
+				proteins.add( proteinName );
+			}
+
+		}
+
+		return proteins;
+
+	}
 
 
 	
@@ -149,8 +188,6 @@ public class MatchedProteinsBuilder {
 				for( FastaProteinAnnotation fpa : mpi.getFastaProteinAnnotations() ) {
 
 					if( fpa.getName().equals( proteinName ) ) {
-
-						System.out.println( fpa.getName() );
 
 						// if this is true, then we already found a protein sequence with this name. this is ambiguous and we have to fail
 						if( foundMatch ) {
@@ -225,13 +262,23 @@ public class MatchedProteinsBuilder {
 
 						String sequence = entry.getSequence();
 
-						MatchedProteinInformation mpi = new MatchedProteinInformation();
-						proteinAnnotations.put( sequence, mpi );
+						MatchedProteinInformation mpi = null;
+						Collection<FastaProteinAnnotation> fastaAnnotations = null;
 
-						mpi.setId( count );
+						if( proteinAnnotations.containsKey( sequence ) ) {
 
-						Collection<FastaProteinAnnotation> fastaAnnotations = new HashSet<>();
-						mpi.setFastaProteinAnnotations( fastaAnnotations );
+							mpi = proteinAnnotations.get( sequence );
+							fastaAnnotations = mpi.getFastaProteinAnnotations();
+						} else {
+
+							mpi = new MatchedProteinInformation();
+							proteinAnnotations.put(sequence, mpi);
+
+							mpi.setId(count);
+
+							fastaAnnotations = new HashSet<>();
+							mpi.setFastaProteinAnnotations( fastaAnnotations );
+						}
 
 						for( FASTAHeader header : entry.getHeaders() ) {
 

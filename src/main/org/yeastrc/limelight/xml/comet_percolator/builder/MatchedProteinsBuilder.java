@@ -16,6 +16,7 @@ import org.yeastrc.fasta.FASTAEntry;
 import org.yeastrc.fasta.FASTAHeader;
 import org.yeastrc.fasta.FASTAReader;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
+import org.yeastrc.limelight.xml.comet_percolator.utils.ConversionUtils;
 
 
 /**
@@ -40,20 +41,19 @@ public class MatchedProteinsBuilder {
 	 *
 	 * @param limelightInputRoot
 	 * @param fastaFile
-	 * @param cometResultsCollection
+	 * @param cometResults
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Integer> buildMatchedProteins( LimelightInput limelightInputRoot, File fastaFile, Collection<CometResults> cometResultsCollection ) throws Exception {
+	public Map<String, Integer> buildMatchedProteins( LimelightInput limelightInputRoot, File fastaFile, CometResults cometResults ) throws Exception {
 		
 		System.err.print( " Matching peptides to proteins..." );
 
 		// all protein names matched by any peptide
 		Collection<String> proteinNames = new HashSet<>();
 
-		for( CometResults cometResults : cometResultsCollection ) {
-			Collection<CometReportedPeptide> reportedPeptides = cometResults.getPeptidePSMMap().keySet();
-			proteinNames.addAll( getAllProteinsFromResults(reportedPeptides) );
+		for( CometReportedPeptide cometReportedPeptide : cometResults.getPeptidePSMMap().keySet() ) {
+			proteinNames.addAll(ConversionUtils.getProteinsNamesForCometReportedPeptide( cometReportedPeptide, cometResults ) );
 		}
 
 		// find the proteins matched by any of these peptides (map of sequence => fasta annotations
@@ -73,23 +73,6 @@ public class MatchedProteinsBuilder {
 		buildAndAddMatchedProteinsToXML( limelightInputRoot, proteins );
 
 		return proteinNameIdMap;
-	}
-
-	/**
-	 * Return a collection of distinct protein names reported by Comet as a match to any peptide.
-	 *
-	 * @param reportedPeptides
-	 * @return
-	 */
-	private Collection<String> getAllProteinsFromResults( Collection<CometReportedPeptide> reportedPeptides ) {
-
-		Collection<String> proteinNames = new HashSet<>();
-
-		for( CometReportedPeptide reportedPeptide : reportedPeptides ) {
-			proteinNames.addAll( reportedPeptide.getProteinMatches());
-		}
-
-		return proteinNames;
 	}
 	
 	

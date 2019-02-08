@@ -128,20 +128,26 @@ public class ConversionUtils {
     }
 
     /**
-     * Given a collection of comet results indexed on file, get a string representing the
-     * comet version(s) that was/were used.
+     * Get all protein names found for the given reported peptide. Checks every PSM because... you never
+     * know.
      *
-     * @param cometResultsByFile
+     * @param cometReportedPeptide
+     * @param cometResults
      * @return
      */
-    public static String getCometVersionFromCometResults( Map<String, CometResults> cometResultsByFile ) {
+    public static Collection<String> getProteinsNamesForCometReportedPeptide( CometReportedPeptide cometReportedPeptide, CometResults cometResults ) {
 
-        Collection<String> versions = new HashSet<>();
-        for( CometResults results : cometResultsByFile.values() ) {
-            versions.add( results.getCometVersion() );
+        Collection<String>  proteinNames = new HashSet<>();
+
+        Map<String, Map<Integer, CometPSM>> cometResultMap = cometResults.getPeptidePSMMap().get( cometReportedPeptide );
+
+        for( Map<Integer, CometPSM> scanNumberPSMMap: cometResultMap.values() ) {
+            for( CometPSM psm : scanNumberPSMMap.values() ) {
+                proteinNames.addAll( psm.getProteinNames() );
+            }
         }
 
-        return String.join( ", ", versions );
+        return proteinNames;
     }
 
 }

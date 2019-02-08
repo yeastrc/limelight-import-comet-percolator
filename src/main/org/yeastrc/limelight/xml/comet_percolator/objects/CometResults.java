@@ -5,8 +5,9 @@ import java.util.Map;
 public class CometResults {
 
 	private String cometVersion;
-	private Map<CometReportedPeptide, Map<Integer, CometPSM>> peptidePSMMap;
-	
+	private Map<CometReportedPeptide, Map<String, Map<Integer, CometPSM>>> peptidePSMMap;
+	private String scanFileExtension;
+
 	/**
 	 * @return the cometVersion
 	 */
@@ -19,17 +20,20 @@ public class CometResults {
 	public void setCometVersion(String cometVersion) {
 		this.cometVersion = cometVersion;
 	}
-	/**
-	 * @return the peptidePSMMap
-	 */
-	public Map<CometReportedPeptide, Map<Integer, CometPSM>> getPeptidePSMMap() {
+
+	public Map<CometReportedPeptide, Map<String, Map<Integer, CometPSM>>> getPeptidePSMMap() {
 		return peptidePSMMap;
 	}
-	/**
-	 * @param peptidePSMMap the peptidePSMMap to set
-	 */
-	public void setPeptidePSMMap(Map<CometReportedPeptide, Map<Integer, CometPSM>> peptidePSMMap) {
+
+	public void setPeptidePSMMap(Map<CometReportedPeptide, Map<String, Map<Integer, CometPSM>>> peptidePSMMap) {
 		this.peptidePSMMap = peptidePSMMap;
 	}
-	
+
+	public String getScanFileExtension() {
+		return scanFileExtension;
+	}
+
+	public void setScanFileExtension(String scanFileExtension) {
+		this.scanFileExtension = scanFileExtension;
+	}
 }

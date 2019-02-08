@@ -5,7 +5,16 @@ import java.util.Collection;
 import java.util.Map;
 
 public class CometReportedPeptide {
-	
+
+	@Override
+	public String toString() {
+		return "CometReportedPeptide{" +
+				"reportedPeptideString='" + reportedPeptideString + '\'' +
+				", nakedPeptide='" + nakedPeptide + '\'' +
+				", mods=" + mods +
+				'}';
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -39,14 +48,6 @@ public class CometReportedPeptide {
 	private String reportedPeptideString;
 	private String nakedPeptide;
 	private Map<Integer, BigDecimal> mods;
-
-	public Collection<String> getProteinMatches() {
-		return proteinMatches;
-	}
-
-	public void setProteinMatches(Collection<String> proteinMatches) {
-		this.proteinMatches = proteinMatches;
-	}
 
 	/**
 	 * @return the reportedPeptideString
@@ -85,7 +86,5 @@ public class CometReportedPeptide {
 		this.mods = mods;
 	}
 
-	public Collection<String> proteinMatches;
-	
 	
 }

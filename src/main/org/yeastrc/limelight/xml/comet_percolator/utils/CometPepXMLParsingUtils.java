@@ -50,6 +50,10 @@ public class CometPepXMLParsingUtils {
 		return "Unknown";
 	}
 
+	public static String getScanFileExtensionFromXML( MsmsRunSummary msmsRunSummary ) {
+		return msmsRunSummary.getRawDataType();
+	}
+
 	/**
 	 * Return true if this searchHit is a decoy. This means that it only matches
 	 * decoy proteins.

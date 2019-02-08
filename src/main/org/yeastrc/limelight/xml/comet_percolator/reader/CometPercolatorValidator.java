@@ -12,29 +12,34 @@ import java.util.Map;
 public class CometPercolatorValidator {
 
 	/**
+	 * Validates All The Things. Ensures all percolator results are found in the expected places in the
+	 * parsed comet results--including expected PSMs being present in expected pepXML files.
 	 *
-	 * @param cometResultsByFile
+	 * @param cometResults
 	 * @param percolatorResults
 	 * @throws Exception
 	 */
-	public static void validateData(Map<String, CometResults> cometResultsByFile, PercolatorResults percolatorResults ) throws Exception {
+	public static void validateData( CometResults cometResults, PercolatorResults percolatorResults ) throws Exception {
 		
 		for( String percolatorReportedPeptide : percolatorResults.getReportedPeptideResults().keySet() ) {
 
 			for (int scanNumber : percolatorResults.getReportedPeptideResults().get(percolatorReportedPeptide).getPercolatorPSMs().keySet()) {
-				PercolatorPSM percPSM = percolatorResults.getReportedPeptideResults().get(percolatorReportedPeptide).getPercolatorPSMs().get( scanNumber );
 
+				PercolatorPSM percPSM = percolatorResults.getReportedPeptideResults().get(percolatorReportedPeptide).getPercolatorPSMs().get( scanNumber );
 				String pepXMLFileName = ConversionUtils.getPepXMLPrefixFromPsmId( percPSM.getPsmId() ) + ".pep.xml";
 
-				if( !cometResultsByFile.containsKey( pepXMLFileName ) ) {
-					throw new Exception( "Did not have any comet results for pep XML file " + pepXMLFileName + " for a psm with id " + percPSM.getPsmId() );
-				}
-
-				CometResults cometResults = cometResultsByFile.get( pepXMLFileName );
 				CometReportedPeptide cometReportedPeptide = CometParsingUtils.getCometReportedPeptideForString(percolatorReportedPeptide, cometResults);
 
-				if (!cometResults.getPeptidePSMMap().get(cometReportedPeptide).containsKey(scanNumber)) {
-					throw new Exception("Error: Could not find PSM data for scan number " + scanNumber + " in percolator results for peptide: " + percolatorReportedPeptide);
+				if( !cometResults.getPeptidePSMMap().containsKey( cometReportedPeptide ) ) {
+					throw new Exception( "Unable to find any comet results for reported peptide: " + cometReportedPeptide );
+				}
+
+				if( !cometResults.getPeptidePSMMap().get( cometReportedPeptide ).containsKey( pepXMLFileName ) ) {
+					throw new Exception( "Unable to find any comet results in " + pepXMLFileName + " for PSM: " + percPSM );
+				}
+
+				if (!cometResults.getPeptidePSMMap().get(cometReportedPeptide).get( pepXMLFileName).containsKey(scanNumber)) {
+					throw new Exception("Error: Could not find PSM data in " + pepXMLFileName + " for scan number " + scanNumber + " for percolator PSM: " + percPSM );
 				}
 
 			}

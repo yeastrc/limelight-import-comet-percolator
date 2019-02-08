@@ -55,15 +55,15 @@ public class ConverterRunner {
 		System.err.println( " Done." );
 
 		System.err.print( "Reading Comet pepXML data into memory..." );
-		Map<String, CometResults> cometResultsByFile = CometPepXMLResultsParser.getCometResults( pepXMLFiles, cometParams );
+		CometResults cometResults = CometPepXMLResultsParser.getCometResults( pepXMLFiles, cometParams );
 		System.err.println( " Done." );
 		
 		System.err.print( "Verifying all percolator results have comet results..." );
-		CometPercolatorValidator.validateData( cometResultsByFile, percResults );
+		CometPercolatorValidator.validateData( cometResults, percResults );
 		System.err.println( " Done." );
 
 		System.err.print( "Writing out XML..." );
-		(new XMLBuilder()).buildAndSaveXML( conversionParameters, cometResultsByFile, percResults, cometParams );
+		(new XMLBuilder()).buildAndSaveXML( conversionParameters, cometResults, percResults, cometParams );
 		System.err.println( " Done." );
 	}
 }

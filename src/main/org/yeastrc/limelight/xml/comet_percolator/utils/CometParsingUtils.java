@@ -10,26 +10,12 @@ import java.util.Collection;
 
 public class CometParsingUtils {
 
-	/**
-	 * Find the comet reported peptide for the given percolator reported peptide string in a collection of comet results.
-	 *
-	 * @param reportedPeptide
-	 * @param cometResultsCollection
-	 * @return
-	 */
-	public static CometReportedPeptide getCometReportedPeptideForString( String reportedPeptide, Collection<CometResults> cometResultsCollection ) {
-
-		for( CometResults cometResults : cometResultsCollection ) {
-
-			CometReportedPeptide crp = getCometReportedPeptideForString( reportedPeptide, cometResults );
-			if( crp != null )
-				return crp;
-
-		}
-
-		return null;
-	}
-
+    /**
+     *
+     * @param reportedPeptide
+     * @param cometResults
+     * @return
+     */
 	public static CometReportedPeptide getCometReportedPeptideForString( String reportedPeptide, CometResults cometResults ) {
 		
 		for( CometReportedPeptide cometPeptide : cometResults.getPeptidePSMMap().keySet() ) {

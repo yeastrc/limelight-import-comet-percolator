@@ -44,7 +44,7 @@ import net.systemsbiology.regis_web.pepxml.MsmsPipelineAnalysis.MsmsRunSummary.S
  */
 public class CometPepXMLResultsParser {
 
-	public static CometResults getCometResults(Collection<File> pepXMLFiles, CometParameters cometParams ) throws Throwable {
+	public static CometResults getCometResults(Collection<File> pepXMLFiles, CometParameters cometParams, Collection<String> validReportedPeptides ) throws Throwable {
 
 		CometResults finalResults = new CometResults();
 
@@ -105,15 +105,18 @@ public class CometPepXMLResultsParser {
 							if (psm != null) {
 								CometReportedPeptide tppRp = ReportedPeptideUtils.getTPPReportedPeptideForTPPPSM(psm);
 
-								if( !resultMap.containsKey( tppRp ) ) {
-									resultMap.put( tppRp, new HashMap<>() );
-								}
+								if( validReportedPeptides != null && validReportedPeptides.contains( tppRp.getReportedPeptideString() ) ) {
 
-								if( !resultMap.get( tppRp ).containsKey( pepXMLFile.getName() ) ) {
-									resultMap.get( tppRp ).put( pepXMLFile.getName(), new HashMap<>() );
-								}
+									if (!resultMap.containsKey(tppRp)) {
+										resultMap.put(tppRp, new HashMap<>());
+									}
 
-								resultMap.get( tppRp ).get( pepXMLFile.getName() ).put(psm.getScanNumber(), psm);
+									if (!resultMap.get(tppRp).containsKey(pepXMLFile.getName())) {
+										resultMap.get(tppRp).put(pepXMLFile.getName(), new HashMap<>());
+									}
+
+									resultMap.get(tppRp).get(pepXMLFile.getName()).put(psm.getScanNumber(), psm);
+								}
 							}
 						}
 					}

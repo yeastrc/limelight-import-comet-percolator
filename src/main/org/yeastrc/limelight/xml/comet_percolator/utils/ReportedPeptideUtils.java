@@ -16,7 +16,6 @@ public class ReportedPeptideUtils {
 		rp.setNakedPeptide( psm.getPeptideSequence() );
 		rp.setMods( psm.getModifications() );
 		rp.setReportedPeptideString( getReportedPeptideStringForSequenceAndMods( psm.getPeptideSequence(), psm.getModifications() ));
-		rp.setProteinMatches( psm.getProteinNames() );
 
 		return rp;
 	}

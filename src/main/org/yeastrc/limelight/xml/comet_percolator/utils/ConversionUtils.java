@@ -53,20 +53,9 @@ public class ConversionUtils {
         Collection<File> pepXMLFiles = new HashSet<>();
         Collection<String> donePrefixes = new HashSet<>();
 
-        for(PercolatorPeptideData ppData : percolatorResults.getReportedPeptideResults().values() ) {
-
-            for(PercolatorPSM psm : ppData.getPercolatorPSMs().values() ) {
-
-                String psmId = psm.getPsmId();
-                String prefix = getPepXMLPrefixFromPsmId( psmId );
-
-                if( donePrefixes.contains( prefix ) ) {
-                    continue;
-                }
-
-                donePrefixes.add( prefix );
-
-                File pepXMLFile = getPepXMLFileWithPrefix( prefix, conversionParams );
+        for( PercolatorPeptideData ppData : percolatorResults.getReportedPeptideResults().values() ) {
+            for( String pepXMLFileName : ppData.getPercolatorPSMs().keySet() ) {
+                File pepXMLFile = getPepXMLFileWithPrefix( pepXMLFileName, conversionParams );
                 pepXMLFiles.add( pepXMLFile );
             }
         }
@@ -77,12 +66,12 @@ public class ConversionUtils {
     /**
      * Get the pepXML file associated with the given prefix, given the conversion parameters
      *
-     * @param prefix
+     * @param pepXMLFileName
      * @param conversionParameters
      * @return
      * @throws FileNotFoundException If the expected file cannot be found.
      */
-    public static File getPepXMLFileWithPrefix( String prefix, ConversionParameters conversionParameters ) throws FileNotFoundException {
+    public static File getPepXMLFileWithPrefix( String pepXMLFileName, ConversionParameters conversionParameters ) throws FileNotFoundException {
 
         File directory = null;
 
@@ -92,7 +81,6 @@ public class ConversionUtils {
             directory = conversionParameters.getPercolatorXMLFile().getParentFile();
         }
 
-        String pepXMLFileName = prefix + ".pep.xml";
         File pepXMLFile = new File( directory, pepXMLFileName );
 
         if( !pepXMLFile.exists() ) {

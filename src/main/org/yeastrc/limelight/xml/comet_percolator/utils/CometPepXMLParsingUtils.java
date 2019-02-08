@@ -51,7 +51,7 @@ public class CometPepXMLParsingUtils {
 	}
 
 	public static String getScanFileExtensionFromXML( MsmsRunSummary msmsRunSummary ) {
-		return msmsRunSummary.getRawDataType();
+		return msmsRunSummary.getRawData();
 	}
 
 	/**

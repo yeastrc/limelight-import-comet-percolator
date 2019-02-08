@@ -5,7 +5,7 @@ import java.util.Map;
 public class PercolatorPeptideData {
 
 	private PercolatorPeptideScores percolatorPeptideScores;
-	private Map<Integer, PercolatorPSM> percolatorPSMs;
+	private Map<String, Map<Integer, PercolatorPSM>> percolatorPSMs;
 	
 	/**
 	 * @return the percolatorPeptideScores
@@ -19,18 +19,12 @@ public class PercolatorPeptideData {
 	public void setPercolatorPeptideScores(PercolatorPeptideScores percolatorPeptideScores) {
 		this.percolatorPeptideScores = percolatorPeptideScores;
 	}
-	/**
-	 * @return the percolatorPSMs
-	 */
-	public Map<Integer, PercolatorPSM> getPercolatorPSMs() {
+
+	public Map<String, Map<Integer, PercolatorPSM>> getPercolatorPSMs() {
 		return percolatorPSMs;
 	}
-	/**
-	 * @param percolatorPSMs the percolatorPSMs to set
-	 */
-	public void setPercolatorPSMs(Map<Integer, PercolatorPSM> percolatorPSMs) {
+
+	public void setPercolatorPSMs(Map<String, Map<Integer, PercolatorPSM>> percolatorPSMs) {
 		this.percolatorPSMs = percolatorPSMs;
 	}
-	
-	
 }

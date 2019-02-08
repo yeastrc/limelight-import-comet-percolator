@@ -1,9 +1,6 @@
 package org.yeastrc.limelight.xml.comet_percolator.reader;
 
-import org.yeastrc.limelight.xml.comet_percolator.objects.CometReportedPeptide;
-import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
-import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorPSM;
-import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorResults;
+import org.yeastrc.limelight.xml.comet_percolator.objects.*;
 import org.yeastrc.limelight.xml.comet_percolator.utils.CometParsingUtils;
 import org.yeastrc.limelight.xml.comet_percolator.utils.ConversionUtils;
 
@@ -20,30 +17,34 @@ public class CometPercolatorValidator {
 	 * @throws Exception
 	 */
 	public static void validateData( CometResults cometResults, PercolatorResults percolatorResults ) throws Exception {
-		
+
 		for( String percolatorReportedPeptide : percolatorResults.getReportedPeptideResults().keySet() ) {
 
-			for (int scanNumber : percolatorResults.getReportedPeptideResults().get(percolatorReportedPeptide).getPercolatorPSMs().keySet()) {
+			Map<String, Map<Integer, PercolatorPSM>> percolatorPeptideDataMap = percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptide ).getPercolatorPSMs();
+			CometReportedPeptide cometReportedPeptide = CometParsingUtils.getCometReportedPeptideForString(percolatorReportedPeptide, cometResults);
 
-				PercolatorPSM percPSM = percolatorResults.getReportedPeptideResults().get(percolatorReportedPeptide).getPercolatorPSMs().get( scanNumber );
-				String pepXMLFileName = ConversionUtils.getPepXMLPrefixFromPsmId( percPSM.getPsmId() ) + ".pep.xml";
+			Map<String, Map<Integer, CometPSM>> cometMap = cometResults.getPeptidePSMMap().get( cometReportedPeptide );
 
-				CometReportedPeptide cometReportedPeptide = CometParsingUtils.getCometReportedPeptideForString(percolatorReportedPeptide, cometResults);
-
-				if( !cometResults.getPeptidePSMMap().containsKey( cometReportedPeptide ) ) {
-					throw new Exception( "Unable to find any comet results for reported peptide: " + cometReportedPeptide );
-				}
-
-				if( !cometResults.getPeptidePSMMap().get( cometReportedPeptide ).containsKey( pepXMLFileName ) ) {
-					throw new Exception( "Unable to find any comet results in " + pepXMLFileName + " for PSM: " + percPSM );
-				}
-
-				if (!cometResults.getPeptidePSMMap().get(cometReportedPeptide).get( pepXMLFileName).containsKey(scanNumber)) {
-					throw new Exception("Error: Could not find PSM data in " + pepXMLFileName + " for scan number " + scanNumber + " for percolator PSM: " + percPSM );
-				}
-
+			if (cometMap == null ) {
+				throw new Exception("Unable to find any comet results for reported peptide: " + cometReportedPeptide);
 			}
+
+
+			for( String pepXMLFileName : percolatorPeptideDataMap.keySet() ) {
+
+				if (!cometMap.containsKey(pepXMLFileName)) {
+					throw new Exception("Unable to find any comet results in " + pepXMLFileName + " for reported peptide: " + cometReportedPeptide );
+				}
+
+				for (int scanNumber : percolatorPeptideDataMap.get( pepXMLFileName ).keySet() ) {
+
+					if (!cometMap.get(pepXMLFileName).containsKey(scanNumber)) {
+						throw new Exception("Error: Could not find PSM data in " + pepXMLFileName + " for scan number " + scanNumber );
+					}
+
+				}
+			}
+
 		}
 	}
-	
 }

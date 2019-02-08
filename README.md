@@ -18,12 +18,6 @@ Usage: java -jar cometPercolator2LimelightXML.jar -c path -p path -o path [-f pa
 
 Example: 
 
-        java -jar cometPercolator2LimelightXML.jar -c /path/to/comet.params
-                                       -p /path/to/percout.xml
-                                       -o /path/to/output.limelight.xml
-                                       -f /path/to/fasta.fa
-                                       -d /path/to/pepxmlfiles
-
          java -jar cometPercolator2LimelightXML.jar -c /data/mass_spec/exp1/comet.params
                                                     -p /data/mass_spec/exp1/percolator.out.xml
                                                     -o /data/mass_spec/exp1/exp1.limelight.xml

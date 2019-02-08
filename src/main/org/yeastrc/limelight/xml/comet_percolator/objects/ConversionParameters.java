@@ -19,6 +19,7 @@
 package org.yeastrc.limelight.xml.comet_percolator.objects;
 
 import java.io.File;
+import java.util.Map;
 
 public class ConversionParameters {
 		
@@ -59,18 +60,6 @@ public class ConversionParameters {
 		this.limelightXMLOutputFile = limelightXMLOutputFile;
 	}
 	/**
-	 * @return the pepXMLFile
-	 */
-	public File getPepXMLFile() {
-		return pepXMLFile;
-	}
-	/**
-	 * @param pepXMLFile the pepXMLFile to set
-	 */
-	public void setPepXMLFile(File pepXMLFile) {
-		this.pepXMLFile = pepXMLFile;
-	}
-	/**
 	 * @return the conversionProgramInfo
 	 */
 	public ConversionProgramInfo getConversionProgramInfo() {
@@ -96,10 +85,18 @@ public class ConversionParameters {
 		this.percolatorXMLFile = percolatorXMLFile;
 	}
 
+	public File getPepXMLDataDirectory() {
+		return pepXMLDataDirectory;
+	}
+
+	public void setPepXMLDataDirectory(File pepXMLDataDirectory) {
+		this.pepXMLDataDirectory = pepXMLDataDirectory;
+	}
+
 	private File fastaFile;
 	private File cometParametersFile;
 	private File limelightXMLOutputFile;
-	private File pepXMLFile;
+	private File pepXMLDataDirectory;
 	private File percolatorXMLFile;
 	private ConversionProgramInfo conversionProgramInfo;
 	

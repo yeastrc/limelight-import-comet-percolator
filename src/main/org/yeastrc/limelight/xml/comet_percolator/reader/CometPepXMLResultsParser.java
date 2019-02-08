@@ -20,6 +20,7 @@ package org.yeastrc.limelight.xml.comet_percolator.reader;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,68 +44,75 @@ import net.systemsbiology.regis_web.pepxml.MsmsPipelineAnalysis.MsmsRunSummary.S
  */
 public class CometPepXMLResultsParser {
 
-	public static CometResults getCometResults( File pepXMLFile, CometParameters cometParams ) throws Throwable {
+	public static Map<String, CometResults> getCometResults(Collection<File> pepXMLFiles, CometParameters cometParams ) throws Throwable {
 
-		Map<CometReportedPeptide,Map<Integer,CometPSM>> resultMap = new HashMap<>();
-				
-		MsmsPipelineAnalysis msAnalysis = null;
-		try {
-			msAnalysis = CometPepXMLParsingUtils.getMSmsPipelineAnalysis( pepXMLFile );
-		} catch( Throwable t ) {
-			System.err.println( "Got an error parsing the pep XML file. Error: " + t.getMessage() );
-			throw t;
-		}
-		
-		
-		CometResults results = new CometResults();
-		results.setPeptidePSMMap( resultMap );
-		
-		results.setCometVersion( CometPepXMLParsingUtils.getCometVersionFromXML( msAnalysis ) );
-		
-		
-		for( MsmsRunSummary runSummary : msAnalysis.getMsmsRunSummary() ) {
-			for( SpectrumQuery spectrumQuery : runSummary.getSpectrumQuery() ) {
-				
-				int charge = CometPepXMLParsingUtils.getChargeFromSpectrumQuery( spectrumQuery );
-				int scanNumber = CometPepXMLParsingUtils.getScanNumberFromSpectrumQuery( spectrumQuery );
-				BigDecimal neutralMass = CometPepXMLParsingUtils.getNeutralMassFromSpectrumQuery( spectrumQuery );
-				BigDecimal retentionTime = CometPepXMLParsingUtils.getRetentionTimeFromSpectrumQuery( spectrumQuery );
-				
-				for( SearchResult searchResult : spectrumQuery.getSearchResult() ) {
-					for( SearchHit searchHit : searchResult.getSearchHit() ) {
-						
-						// do not include decoy hits
-						if( CometPepXMLParsingUtils.searchHitIsDecoy( searchHit, cometParams ) ) {
-							continue;
-						}
-						
-						CometPSM psm = null;
-						
-						try {
-							
-							psm = CometPepXMLParsingUtils.getPsmFromSearchHit( searchHit, charge, scanNumber, neutralMass, retentionTime, cometParams  );
-							
-						} catch( Throwable t) {
-							
-							System.err.println( "Error reading PSM from pepXML. Error: " + t.getMessage() );
-							throw t;
-							
-						}
-						
-						if( psm != null ) {
-							CometReportedPeptide tppRp = ReportedPeptideUtils.getTPPReportedPeptideForTPPPSM( psm );
-							
-							if( !results.getPeptidePSMMap().containsKey( tppRp ) )
-								results.getPeptidePSMMap().put( tppRp, new HashMap<>() );
-							
-							results.getPeptidePSMMap().get( tppRp ).put( psm.getScanNumber(), psm );
+		Map<String, CometResults> finalResults = new HashMap<>();
+
+		for( File pepXMLFile : pepXMLFiles) {
+
+			Map<CometReportedPeptide, Map<Integer, CometPSM>> resultMap = new HashMap<>();
+
+			MsmsPipelineAnalysis msAnalysis = null;
+			try {
+				msAnalysis = CometPepXMLParsingUtils.getMSmsPipelineAnalysis(pepXMLFile);
+			} catch (Throwable t) {
+				System.err.println("Got an error parsing the pep XML file. Error: " + t.getMessage());
+				throw t;
+			}
+
+
+			CometResults results = new CometResults();
+			results.setPeptidePSMMap(resultMap);
+
+			results.setCometVersion(CometPepXMLParsingUtils.getCometVersionFromXML(msAnalysis));
+
+
+			for (MsmsRunSummary runSummary : msAnalysis.getMsmsRunSummary()) {
+				for (SpectrumQuery spectrumQuery : runSummary.getSpectrumQuery()) {
+
+					int charge = CometPepXMLParsingUtils.getChargeFromSpectrumQuery(spectrumQuery);
+					int scanNumber = CometPepXMLParsingUtils.getScanNumberFromSpectrumQuery(spectrumQuery);
+					BigDecimal neutralMass = CometPepXMLParsingUtils.getNeutralMassFromSpectrumQuery(spectrumQuery);
+					BigDecimal retentionTime = CometPepXMLParsingUtils.getRetentionTimeFromSpectrumQuery(spectrumQuery);
+
+					for (SearchResult searchResult : spectrumQuery.getSearchResult()) {
+						for (SearchHit searchHit : searchResult.getSearchHit()) {
+
+							// do not include decoy hits
+							if (CometPepXMLParsingUtils.searchHitIsDecoy(searchHit, cometParams)) {
+								continue;
+							}
+
+							CometPSM psm = null;
+
+							try {
+
+								psm = CometPepXMLParsingUtils.getPsmFromSearchHit(searchHit, charge, scanNumber, neutralMass, retentionTime, cometParams);
+
+							} catch (Throwable t) {
+
+								System.err.println("Error reading PSM from pepXML. Error: " + t.getMessage());
+								throw t;
+
+							}
+
+							if (psm != null) {
+								CometReportedPeptide tppRp = ReportedPeptideUtils.getTPPReportedPeptideForTPPPSM(psm);
+
+								if (!results.getPeptidePSMMap().containsKey(tppRp))
+									results.getPeptidePSMMap().put(tppRp, new HashMap<>());
+
+								results.getPeptidePSMMap().get(tppRp).put(psm.getScanNumber(), psm);
+							}
 						}
 					}
 				}
 			}
+
+			finalResults.put( pepXMLFile.getName(), results );
 		}
-		
-		return results;
+
+		return finalResults;
 	}
 	
 }

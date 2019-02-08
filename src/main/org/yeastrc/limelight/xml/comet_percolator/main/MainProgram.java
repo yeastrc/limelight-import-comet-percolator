@@ -21,6 +21,9 @@ package org.yeastrc.limelight.xml.comet_percolator.main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 import org.yeastrc.limelight.xml.comet_percolator.constants.Constants;
 import org.yeastrc.limelight.xml.comet_percolator.objects.ConversionParameters;
@@ -50,9 +53,9 @@ public class MainProgram {
 
 		CmdLineParser.Option cometParamOpt = cmdLineParser.addStringOption( 'c', "comet_params" );	
 		CmdLineParser.Option outfileOpt = cmdLineParser.addStringOption( 'o', "out" );	
-		CmdLineParser.Option pepXMLOpt = cmdLineParser.addStringOption( 'p', "pepxml" );	
-		CmdLineParser.Option percXMLOpt = cmdLineParser.addStringOption( 'r', "percolator" );	
+		CmdLineParser.Option percXMLOpt = cmdLineParser.addStringOption( 'p', "percolator" );
 		CmdLineParser.Option fastaFileOpt = cmdLineParser.addStringOption( 'f', "fasta" );
+		CmdLineParser.Option pepXMLDirectoryOpt = cmdLineParser.addStringOption( 'd', "directory" );
 
 		// parse command line options
 		try { cmdLineParser.parse(args); }
@@ -65,11 +68,19 @@ public class MainProgram {
 			System.exit( 1 );
 		}
 
+
 		String cometParamFilePath = (String)cmdLineParser.getOptionValue( cometParamOpt );
 		String outFilePath = (String)cmdLineParser.getOptionValue( outfileOpt );
-		String pepXMLFilePath = (String)cmdLineParser.getOptionValue( pepXMLOpt );
+		String pepXMLDirectoryName = (String)cmdLineParser.getOptionValue( pepXMLDirectoryOpt );
 		String percXMLFilePath = (String)cmdLineParser.getOptionValue( percXMLOpt );
 		String fastaFilePath = (String)cmdLineParser.getOptionValue( fastaFileOpt );
+
+		// ensure a valid comet params file is specified
+		if( cometParamFilePath == null ) {
+			System.err.println( "Please specify the location of a comet params file. (-c option)." );
+			printHelp();
+			System.exit( 1 );
+		}
 
 		File cometParamFile = new File( cometParamFilePath );
 		if( !cometParamFile.exists() ) {
@@ -77,22 +88,47 @@ public class MainProgram {
 			System.exit( 1 );
 		}
 
-		File pepXMLFile = new File( pepXMLFilePath );
-		if( !pepXMLFile.exists() ) {
-			System.err.println( "Could not find pepXML file: " + pepXMLFilePath );
+		// ensure a valid percolator output XML file was specified
+		if( percXMLFilePath == null ) {
+			System.err.println( "Please specify the location of a percolator output XML file. (-p option)." );
+			printHelp();
 			System.exit( 1 );
 		}
-		
+
 		File percXMLFile = new File( percXMLFilePath );
 		if( !percXMLFile.exists() ) {
 			System.err.println( "Could not find percolator XML file: " + percXMLFilePath );
 			System.exit( 1 );
 		}
 
-		File fastaFile = new File( fastaFilePath );
-		if( !fastaFile.exists() ) {
-			System.err.println( "Could not find fasta file: " + fastaFilePath );
-			System.exit( 1 );
+		// if a FASTA file was specified, ensure it exists
+		File fastaFile = null;
+
+		if( fastaFilePath != null ) {
+			fastaFile = new File(fastaFilePath);
+
+			if (!fastaFile.exists()) {
+				System.err.println("Could not find fasta file: " + fastaFilePath);
+				System.exit(1);
+			}
+		}
+
+		// if a data directory was specified, ensure it exists
+		File pepXMLDirectory = null;
+		if( pepXMLDirectoryName != null ) {
+
+			pepXMLDirectory = new File( pepXMLDirectoryName );
+
+			if( !pepXMLDirectory.exists() ) {
+				System.err.println("Could not directory: " + pepXMLDirectoryName);
+				System.exit(1);
+			}
+
+			if( !pepXMLDirectory.isDirectory() ) {
+				System.err.println( pepXMLDirectoryName + " is not a directory.");
+				System.exit(1);
+			}
+
 		}
 
 		ConversionProgramInfo cpi = ConversionProgramInfo.createInstance( String.join( " ",  args ) );        
@@ -100,8 +136,8 @@ public class MainProgram {
 		ConversionParameters cp = new ConversionParameters();
 		cp.setConversionProgramInfo( cpi );
 		cp.setFastaFile( fastaFile );
+		cp.setPepXMLDataDirectory( pepXMLDirectory );
 		cp.setCometParametersFile( cometParamFile );
-		cp.setPepXMLFile( pepXMLFile );
 		cp.setPercolatorXMLFile( percXMLFile );
 		cp.setLimelightXMLOutputFile( new File( outFilePath ) );
 

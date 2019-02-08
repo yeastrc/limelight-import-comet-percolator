@@ -33,7 +33,16 @@ public class CometParameters {
 		this.decoyPrefix = decoyPrefix;
 	}
 
+	public String getFastaFile() {
+		return fastaFile;
+	}
+
+	public void setFastaFile(String fastaFile) {
+		this.fastaFile = fastaFile;
+	}
+
 	private Map<Character, Double> staticMods;
 	private String decoyPrefix;
+	private String fastaFile;
 	
 }

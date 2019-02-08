@@ -1,11 +1,11 @@
 package org.yeastrc.limelight.xml.comet_percolator.builder;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.yeastrc.limelight.limelight_import.api.xml_dto.*;
@@ -29,11 +29,12 @@ import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorPSM;
 import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorPeptideData;
 import org.yeastrc.limelight.xml.comet_percolator.objects.PercolatorResults;
 import org.yeastrc.limelight.xml.comet_percolator.utils.CometParsingUtils;
+import org.yeastrc.limelight.xml.comet_percolator.utils.ConversionUtils;
 
 public class XMLBuilder {
 
 	public void buildAndSaveXML( ConversionParameters conversionParameters,
-			                     CometResults cometResults,
+			                     Map<String, CometResults> cometResultsByFile,
 			                     PercolatorResults percolatorResults,
 			                     CometParameters cometParameters )
     throws Exception {
@@ -57,7 +58,7 @@ public class XMLBuilder {
 				
 			searchProgram.setName( Constants.PROGRAM_NAME_COMET );
 			searchProgram.setDisplayName( Constants.PROGRAM_NAME_COMET );
-			searchProgram.setVersion( cometResults.getCometVersion() );
+			searchProgram.setVersion(ConversionUtils.getCometVersionFromCometResults(cometResultsByFile));
 			
 			
 			//
@@ -177,7 +178,7 @@ public class XMLBuilder {
 		Map<String, Integer> proteinNameIds = MatchedProteinsBuilder.getInstance().buildMatchedProteins(
 				limelightInputRoot,
 				conversionParameters.getFastaFile(),
-				cometResults.getPeptidePSMMap().keySet()
+				cometResultsByFile.values()
 		);
 
 
@@ -190,11 +191,11 @@ public class XMLBuilder {
 		// iterate over each distinct reported peptide
 		for( String percolatorReportedPeptide : percolatorResults.getReportedPeptideResults().keySet() ) {
 			
-			CometReportedPeptide cometReportedPeptide = CometParsingUtils.getCometReportedPeptideForString( percolatorReportedPeptide, cometResults );
+			CometReportedPeptide cometReportedPeptide = CometParsingUtils.getCometReportedPeptideForString( percolatorReportedPeptide, cometResultsByFile.values() );
 			
 			ReportedPeptide xmlReportedPeptide = new ReportedPeptide();
 			reportedPeptides.getReportedPeptide().add( xmlReportedPeptide );
-			
+
 			xmlReportedPeptide.setReportedPeptideString( cometReportedPeptide.getReportedPeptideString() );
 			xmlReportedPeptide.setSequence( cometReportedPeptide.getNakedPeptide() );
 
@@ -202,6 +203,7 @@ public class XMLBuilder {
 			xmlReportedPeptide.setMatchedProteinsForPeptide( xProteinsForPeptide );
 
 			// add in protein inference info
+			// todo: re-do this--do i need to look at all comet reported peptides in all pepxml files for this?
 			for( String proteinName : cometReportedPeptide.getProteinMatches() ) {
 
 				int matchedProteinId = proteinNameIds.get( proteinName );

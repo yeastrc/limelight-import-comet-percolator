@@ -27,6 +27,11 @@ import org.yeastrc.limelight.xml.comet_percolator.reader.CometParamsReader;
 import org.yeastrc.limelight.xml.comet_percolator.reader.CometPepXMLResultsParser;
 import org.yeastrc.limelight.xml.comet_percolator.reader.CometPercolatorValidator;
 import org.yeastrc.limelight.xml.comet_percolator.reader.PercolatorResultsReader;
+import org.yeastrc.limelight.xml.comet_percolator.utils.ConversionUtils;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Map;
 
 public class ConverterRunner {
 
@@ -38,22 +43,27 @@ public class ConverterRunner {
 	
 		System.err.print( "Reading comet params into memory..." );
 		CometParameters cometParams = CometParamsReader.getCometParameters( conversionParameters.getCometParametersFile() );
+		ConversionUtils.conditionallyAddFastaToConversionParameters( conversionParameters, cometParams );
 		System.err.println( " Done." );
-		
-		System.err.print( "Reading Comet pepXML data into memory..." );
-		CometResults cometResults = CometPepXMLResultsParser.getCometResults( conversionParameters.getPepXMLFile(), cometParams );
-		System.err.println( " Done." );
-		
+
 		System.err.print( "Reading Percolator XML data into memory..." );
 		PercolatorResults percResults = PercolatorResultsReader.getPercolatorResults( conversionParameters.getPercolatorXMLFile() );
 		System.err.println( " Done." );
+
+		System.err.print( "Locating pepXML files using Percolator results..." );
+		Collection<File> pepXMLFiles = ConversionUtils.findPepXMLFilesUsingPercolatorResults( conversionParameters, percResults );
+		System.err.println( " Done." );
+
+		System.err.print( "Reading Comet pepXML data into memory..." );
+		Map<String, CometResults> cometResultsByFile = CometPepXMLResultsParser.getCometResults( pepXMLFiles, cometParams );
+		System.err.println( " Done." );
 		
 		System.err.print( "Verifying all percolator results have comet results..." );
-		CometPercolatorValidator.validateData( cometResults, percResults );
+		CometPercolatorValidator.validateData( cometResultsByFile, percResults );
 		System.err.println( " Done." );
 
 		System.err.print( "Writing out XML..." );
-		(new XMLBuilder()).buildAndSaveXML( conversionParameters, cometResults, percResults, cometParams );
+		(new XMLBuilder()).buildAndSaveXML( conversionParameters, cometResultsByFile, percResults, cometParams );
 		System.err.println( " Done." );
 	}
 }

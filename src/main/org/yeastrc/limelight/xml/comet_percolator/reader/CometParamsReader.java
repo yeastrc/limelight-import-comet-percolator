@@ -36,6 +36,10 @@ public class CometParamsReader {
 			magParams.setDecoyPrefix( getDecoyPrefix( is ) );
 		}
 
+		try ( InputStream is = new FileInputStream( paramsFile ) ) {
+			magParams.setFastaFile( getFastaFile( is ) );
+		}
+
 		return magParams;
 	}
 	
@@ -87,6 +91,33 @@ public class CometParamsReader {
 
 			}
 
+		}
+
+		return null;
+	}
+
+	public static String getFastaFile( InputStream paramsInputStream) throws IOException {
+
+		try (BufferedReader br = new BufferedReader( new InputStreamReader( paramsInputStream ) ) ) {
+
+			for ( String line = br.readLine(); line != null; line = br.readLine() ) {
+
+				// skip immediately if it's not a line we want
+				if( !line.startsWith( "database_name" ) )
+					continue;
+
+				Pattern p= Pattern.compile( "^database_name\\s+=\\s+\"(\\S+)\".*$" );
+				Matcher m = p.matcher( line );
+				if( m.matches() ) {
+					return m.group( 1 );
+				}
+
+				p = Pattern.compile( "^database_name\\s+=\\s+(\\S+).*$" );
+				m = p.matcher( line );
+				if( m.matches() ) {
+					return m.group( 1 );
+				}
+			}
 		}
 
 		return null;

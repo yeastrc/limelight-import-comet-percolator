@@ -15,6 +15,7 @@ import org.yeastrc.limelight.xml.comet_percolator.objects.CometReportedPeptide;
 import org.yeastrc.fasta.FASTAEntry;
 import org.yeastrc.fasta.FASTAHeader;
 import org.yeastrc.fasta.FASTAReader;
+import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
 
 
 /**
@@ -39,16 +40,21 @@ public class MatchedProteinsBuilder {
 	 *
 	 * @param limelightInputRoot
 	 * @param fastaFile
-	 * @param reportedPeptides
+	 * @param cometResultsCollection
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Integer> buildMatchedProteins( LimelightInput limelightInputRoot, File fastaFile, Collection<CometReportedPeptide> reportedPeptides ) throws Exception {
+	public Map<String, Integer> buildMatchedProteins( LimelightInput limelightInputRoot, File fastaFile, Collection<CometResults> cometResultsCollection ) throws Exception {
 		
 		System.err.print( " Matching peptides to proteins..." );
 
 		// all protein names matched by any peptide
-		Collection<String> proteinNames = getAllProteinsFromResults( reportedPeptides );
+		Collection<String> proteinNames = new HashSet<>();
+
+		for( CometResults cometResults : cometResultsCollection ) {
+			Collection<CometReportedPeptide> reportedPeptides = cometResults.getPeptidePSMMap().keySet();
+			proteinNames.addAll( getAllProteinsFromResults(reportedPeptides) );
+		}
 
 		// find the proteins matched by any of these peptides (map of sequence => fasta annotations
 		Map<String, MatchedProteinInformation> proteins = getProteinsUsingProteinNames( proteinNames, fastaFile );

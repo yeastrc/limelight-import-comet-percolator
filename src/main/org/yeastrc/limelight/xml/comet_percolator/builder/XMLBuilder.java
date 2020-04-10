@@ -372,6 +372,14 @@ public class XMLBuilder {
 						xmlFilterablePsmAnnotation.setSearchProgram(Constants.PROGRAM_NAME_COMET);
 						xmlFilterablePsmAnnotation.setValue(BigDecimal.valueOf(psm.getHitRank()).setScale(0, RoundingMode.HALF_UP));
 					}
+					{
+						FilterablePsmAnnotation xmlFilterablePsmAnnotation = new FilterablePsmAnnotation();
+						xmlFilterablePsmAnnotations.getFilterablePsmAnnotation().add(xmlFilterablePsmAnnotation);
+
+						xmlFilterablePsmAnnotation.setAnnotationName(PSMAnnotationTypes.COMET_ANNOTATION_TYPE_MASS_DIFF);
+						xmlFilterablePsmAnnotation.setSearchProgram(Constants.PROGRAM_NAME_COMET);
+						xmlFilterablePsmAnnotation.setValue(psm.getMassDiff());
+					}
 
 					// handle percolator scores
 					{

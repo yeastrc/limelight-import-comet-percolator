@@ -166,6 +166,7 @@ public class CometPepXMLParsingUtils {
 		psm.setPrecursorNeutralMass( obsMass );
 		psm.setRetentionTime( retentionTime );
 		psm.setHitRank( getHitRankForSearchHit( searchHit ) );
+		psm.setMassDiff(getMassDiffForSearchHit(searchHit));
 		
 		psm.setPeptideSequence( searchHit.getPeptide() );
 		
@@ -207,6 +208,10 @@ public class CometPepXMLParsingUtils {
 		
 		return toIntExact( searchHit.getHitRank() );
 		
+	}
+
+	public static BigDecimal getMassDiffForSearchHit( SearchHit searchHit) {
+		return searchHit.getMassdiff();
 	}
 
 	/**

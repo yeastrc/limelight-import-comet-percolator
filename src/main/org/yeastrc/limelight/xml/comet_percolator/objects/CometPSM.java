@@ -12,6 +12,7 @@ public class CometPSM {
 	private BigDecimal spScore;
 	private BigDecimal spRank;
 	private BigDecimal eValue;
+	private BigDecimal massDiff;
 	private int hitRank;
 	
 	
@@ -29,6 +30,7 @@ public class CometPSM {
 				", spScore=" + spScore +
 				", spRank=" + spRank +
 				", eValue=" + eValue +
+				", massDiff=" + massDiff +
 				", hitRank=" + hitRank +
 				", scanNumber=" + scanNumber +
 				", precursorNeutralMass=" + precursorNeutralMass +
@@ -225,6 +227,12 @@ public class CometPSM {
 	public void setFdr(BigDecimal fdr) {
 		this.fdr = fdr;
 	}
-	
-	
+
+	public BigDecimal getMassDiff() {
+		return massDiff;
+	}
+
+	public void setMassDiff(BigDecimal massDiff) {
+		this.massDiff = massDiff;
+	}
 }

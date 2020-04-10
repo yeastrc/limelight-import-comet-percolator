@@ -38,7 +38,8 @@ public class PSMAnnotationTypes {
 	public static final String COMET_ANNOTATION_TYPE_SPRANK = "Sp Rank";
 	public static final String COMET_ANNOTATION_TYPE_EXPECT = "E-Value";
 	public static final String COMET_ANNOTATION_TYPE_HIT_RANK = "Hit Rank";
-	
+	public static final String COMET_ANNOTATION_TYPE_MASS_DIFF = "Mass Diff";
+
 	// percolator scores
 	public static final String PERCOLATOR_ANNOTATION_TYPE_QVALUE = "q-value";
 	public static final String PERCOLATOR_ANNOTATION_TYPE_PVALUE = "p-value";
@@ -112,6 +113,15 @@ public class PSMAnnotationTypes {
 				type.setFilterDirection( FilterDirectionType.BELOW );
 				type.setDefaultFilterValue( BigDecimal.valueOf( 1 ) );
 				
+				types.add( type );
+			}
+
+			{
+				FilterablePsmAnnotationType type = new FilterablePsmAnnotationType();
+				type.setName( COMET_ANNOTATION_TYPE_MASS_DIFF );
+				type.setDescription( "Mass difference between observed and calculated m/z" );
+				type.setFilterDirection( FilterDirectionType.BELOW );
+
 				types.add( type );
 			}
 			

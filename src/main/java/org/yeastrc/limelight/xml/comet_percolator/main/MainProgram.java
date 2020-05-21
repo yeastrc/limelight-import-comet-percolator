@@ -1,6 +1,6 @@
 /*
  * Original author: Michael Riffle <mriffle .at. uw.edu>
- *                  
+ *
  * Copyright 2018 University of Washington - Seattle, WA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63,6 +63,9 @@ public class MainProgram implements Runnable {
 	@CommandLine.Option(names = { "-v", "--verbose" }, required = false, description = "If this parameter is present, error messages will include a full stacktrace. Helpful for debugging.")
 	private boolean verboseRequested = false;
 
+	@CommandLine.Option(names = { "--open-mod" }, required = false, description = "If this parameter is present, the converter will run in open mod mode. Mass diffs on the PSMs will be treated as an unlocalized modification mass for the peptide.")
+	private boolean isOpenMod = false;
+
 	private String[] args;
 
 	public void run() {
@@ -112,6 +115,7 @@ public class MainProgram implements Runnable {
 		cp.setCometParametersFile( cometParamsFile );
 		cp.setPercolatorXMLFile( percolatorFile );
 		cp.setLimelightXMLOutputFile( outFile );
+		cp.setOpenMod(isOpenMod);
 
 		try {
 			ConverterRunner.createInstance().convertCometPercolatorToLimelightXML(cp);
@@ -138,7 +142,7 @@ public class MainProgram implements Runnable {
 
 	/**
 	 * Print runtime info to STD ERR
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static void printRuntimeInfo() {
 
@@ -151,9 +155,9 @@ public class MainProgram implements Runnable {
 				line = line.replace( "{{VERSION}}", Constants.CONVERSION_PROGRAM_VERSION );
 
 				System.err.println( line );
-				
+
 			}
-			
+
 			System.err.println( "" );
 
 		} catch ( Exception e ) {

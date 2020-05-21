@@ -1,6 +1,6 @@
 /*
  * Original author: Michael Riffle <mriffle .at. uw.edu>
- *                  
+ *
  * Copyright 2018 University of Washington - Seattle, WA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ package org.yeastrc.limelight.xml.comet_percolator.objects;
 import java.io.File;
 
 public class ConversionParameters {
-		
+
 	/**
 	 * @return the fastaFile
 	 */
@@ -70,7 +70,7 @@ public class ConversionParameters {
 	public void setConversionProgramInfo(ConversionProgramInfo conversionProgramInfo) {
 		this.conversionProgramInfo = conversionProgramInfo;
 	}
-	
+
 	/**
 	 * @return the percolatorXMLFile
 	 */
@@ -92,11 +92,21 @@ public class ConversionParameters {
 		this.pepXMLDataDirectory = pepXMLDataDirectory;
 	}
 
+	public boolean isOpenMod() {
+		return isOpenMod;
+	}
+
+	public void setOpenMod(boolean openMod) {
+		isOpenMod = openMod;
+	}
+
 	private File fastaFile;
 	private File cometParametersFile;
 	private File limelightXMLOutputFile;
 	private File pepXMLDataDirectory;
 	private File percolatorXMLFile;
+	private boolean isOpenMod;
+
 	private ConversionProgramInfo conversionProgramInfo;
-	
+
 }

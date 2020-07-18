@@ -64,5 +64,11 @@ public class ConverterRunner {
 		System.err.print( "Writing out XML..." );
 		(new XMLBuilder()).buildAndSaveXML( conversionParameters, cometResults, percResults, cometParams );
 		System.err.println( " Done." );
+
+		// validate the limelight xml
+		System.err.print( "Validating Limelight XML..." );
+		LimelightXMLValidator.validateLimelightXML(conversionParameters.getLimelightXMLOutputFile());
+		System.err.println( " Done." );
+
 	}
 }

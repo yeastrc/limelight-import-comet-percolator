@@ -6,6 +6,7 @@ import org.yeastrc.limelight.xml.comet_percolator.objects.CometReportedPeptide;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class CometParsingUtils {
 
@@ -34,7 +35,7 @@ public class CometParsingUtils {
 	 * @return
 	 */
 	public static BigDecimal getNTerminalModMass( BigDecimal reportedModMass ) {
-		return reportedModMass.subtract(CometConstants.COMET_MASS_HYDROGEN_MONO );
+		return reportedModMass.subtract(CometConstants.COMET_MASS_HYDROGEN_MONO.setScale(4, RoundingMode.HALF_UP) );
 	}
 
 	/**
@@ -45,7 +46,7 @@ public class CometParsingUtils {
 	 * @return
 	 */
 	public static BigDecimal getCTerminalModMass( BigDecimal reportedModMass ) {
-		return reportedModMass.subtract( CometConstants.COMET_MASS_HYDROGEN_MONO ).subtract( CometConstants.COMET_MASS_OXYGEN_MONO );
+		return reportedModMass.subtract( CometConstants.COMET_MASS_HYDROGEN_MONO.setScale(4, RoundingMode.HALF_UP) ).subtract( CometConstants.COMET_MASS_OXYGEN_MONO );
 	}
 
 	/**

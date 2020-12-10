@@ -7,6 +7,7 @@ public class CometResults {
 	private String cometVersion;
 	private Map<CometReportedPeptide, Map<String, Map<Integer, CometPSM>>> peptidePSMMap;
 	private String scanFileExtension;
+	private boolean deltaCNStarPresent = true;
 
 	/**
 	 * @return the cometVersion
@@ -35,5 +36,13 @@ public class CometResults {
 
 	public void setScanFileExtension(String scanFileExtension) {
 		this.scanFileExtension = scanFileExtension;
+	}
+
+	public boolean isDeltaCNStarPresent() {
+		return deltaCNStarPresent;
+	}
+
+	public void setDeltaCNStarPresent(boolean deltaCNStarIsPresent) {
+		this.deltaCNStarPresent = deltaCNStarIsPresent;
 	}
 }

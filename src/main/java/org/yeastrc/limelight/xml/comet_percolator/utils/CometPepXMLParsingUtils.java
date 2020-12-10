@@ -170,8 +170,16 @@ public class CometPepXMLParsingUtils {
 		psm.setPeptideSequence( searchHit.getPeptide() );
 		
 		psm.setxCorr( getScoreForType( searchHit, "xcorr" ) );
+
 		psm.setDeltaCn( getScoreForType( searchHit, "deltacn" ) );
-		psm.setDeltaCnStar( getScoreForType( searchHit, "deltacnstar" ) );
+
+		// detalcnstar may not be present
+		try {
+			psm.setDeltaCnStar(getScoreForType(searchHit, "deltacnstar"));
+		} catch(Exception e) {
+			;
+		}
+
 		psm.setSpScore( getScoreForType( searchHit, "spscore" ) );
 		psm.setSpRank( getScoreForType( searchHit, "sprank" ) );
 		psm.seteValue( getScoreForType( searchHit, "expect" ) );

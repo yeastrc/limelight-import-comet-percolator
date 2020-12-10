@@ -27,7 +27,7 @@ public class CometPercolatorValidator {
 			Map<String, Map<Integer, CometPSM>> cometMap = cometResults.getPeptidePSMMap().get( cometReportedPeptide );
 
 			if (cometMap == null ) {
-				throw new Exception("Unable to find any comet results for reported peptide: " + cometReportedPeptide);
+				throw new Exception("Unable to find any comet results for reported peptide: " + percolatorReportedPeptide);
 			}
 
 

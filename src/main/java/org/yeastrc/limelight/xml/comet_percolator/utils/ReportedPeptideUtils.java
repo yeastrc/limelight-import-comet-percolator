@@ -23,8 +23,13 @@ public class ReportedPeptideUtils {
 	public static String getReportedPeptideStringForSequenceAndMods( String sequence, Map<Integer, BigDecimal> mods ) throws Exception {
 		
 		for( int position : mods.keySet() ) {
-			if( position < 0 || position > sequence.length() )
-				throw new Exception( "Position " + position + " is not in the peptide sequence." );
+			if( position < 0 || position > sequence.length() + 1 ) {
+				String msg = "Position " + position + " is not in the peptide sequence.\n";
+				msg += "Peptide: " + sequence + "\n";
+				msg += "Mods: " + mods;
+
+				throw new Exception(msg);
+			}
 		}
 		
 		StringBuffer sb = new StringBuffer();
@@ -60,7 +65,6 @@ public class ReportedPeptideUtils {
 			sb.append( "c[" + v.toString() + "]" );
 		}
 
-		
 		return sb.toString();	
 	}	
 }

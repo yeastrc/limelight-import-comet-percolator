@@ -29,6 +29,7 @@ import org.yeastrc.limelight.xml.comet_percolator.objects.CometPSM;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometParameters;
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometReportedPeptide;
 import org.yeastrc.limelight.xml.comet_percolator.objects.ConversionParameters;
+import org.yeastrc.limelight.xml.comet_percolator.utils.MassUtils;
 
 public class XMLBuilder {
 
@@ -309,6 +310,8 @@ public class XMLBuilder {
 					xmlPsm.setScanNumber(new BigInteger(String.valueOf(scanNumber)));
 					xmlPsm.setPrecursorCharge(new BigInteger(String.valueOf(psm.getCharge())));
 					xmlPsm.setScanFileName(scanFilePrefix + cometResults.getScanFileExtension());
+					xmlPsm.setPrecursorMZ(MassUtils.getObservedMoverZForPsm(psm));
+					xmlPsm.setPrecursorRetentionTime(psm.getRetentionTime());
 
 					// add in the filterable PSM annotations (e.g., score)
 					FilterablePsmAnnotations xmlFilterablePsmAnnotations = new FilterablePsmAnnotations();

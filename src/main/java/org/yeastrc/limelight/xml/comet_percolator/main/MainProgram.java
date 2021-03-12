@@ -21,6 +21,8 @@ package org.yeastrc.limelight.xml.comet_percolator.main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+
 import org.yeastrc.limelight.xml.comet_percolator.objects.ConversionParameters;
 import org.yeastrc.limelight.xml.comet_percolator.objects.ConversionProgramInfo;
 
@@ -56,6 +58,9 @@ public class MainProgram implements Runnable {
 
 	@CommandLine.Option(names = { "-d", "--pepxml-directory" }, required = false, description = "(Optional) By default, this program expects the pepXML file(s) to be in the same directory as the percolator file. If this is not true, use this option to specify the _directory_ in which the pepXML files may be found.")
 	private File pepXMLDirectory;
+
+	@CommandLine.Option(names = { "-q", "--q-value" }, required = false, description = "(Optional) Override the default q-value cutoff to this value.")
+	private BigDecimal qValueOverride;
 
 	@CommandLine.Option(names = { "-o", "--out-file" }, required = true, description = "Full path to use for the Limelight XML output file. E.g., /data/my_analysis/crux.limelight.xml")
 	private File outFile;
@@ -116,6 +121,7 @@ public class MainProgram implements Runnable {
 		cp.setPercolatorXMLFile( percolatorFile );
 		cp.setLimelightXMLOutputFile( outFile );
 		cp.setOpenMod(isOpenMod);
+		cp.setqValueOverride( qValueOverride );
 
 		try {
 			ConverterRunner.createInstance().convertCometPercolatorToLimelightXML(cp);

@@ -25,7 +25,7 @@ import java.util.List;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterDirectionType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterablePsmAnnotationType;
 import org.yeastrc.limelight.xml.comet_percolator.constants.Constants;
-
+import org.yeastrc.limelight.xml.comet_percolator.objects.ConversionParameters;
 
 
 public class PSMAnnotationTypes {
@@ -48,7 +48,7 @@ public class PSMAnnotationTypes {
 
 	
 	
-	public static List<FilterablePsmAnnotationType> getFilterablePsmAnnotationTypes( String programName, boolean deltaCNStarPresent ) {
+	public static List<FilterablePsmAnnotationType> getFilterablePsmAnnotationTypes(String programName, boolean deltaCNStarPresent, ConversionParameters conversionParameters) {
 		List<FilterablePsmAnnotationType> types = new ArrayList<FilterablePsmAnnotationType>();
 
 		if( programName.equals( Constants.PROGRAM_NAME_COMET ) ) {
@@ -133,7 +133,11 @@ public class PSMAnnotationTypes {
 				type.setName( PERCOLATOR_ANNOTATION_TYPE_QVALUE );
 				type.setDescription( "Q-value" );
 				type.setFilterDirection( FilterDirectionType.BELOW );
-				type.setDefaultFilterValue( BigDecimal.valueOf( 0.01 ) );
+
+				if(conversionParameters.getqValueOverride() == null)
+					type.setDefaultFilterValue( BigDecimal.valueOf( 0.01 ) );
+				else
+					type.setDefaultFilterValue(conversionParameters.getqValueOverride());
 	
 				types.add( type );
 			}

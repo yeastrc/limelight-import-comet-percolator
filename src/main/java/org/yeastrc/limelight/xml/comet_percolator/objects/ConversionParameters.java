@@ -19,6 +19,7 @@
 package org.yeastrc.limelight.xml.comet_percolator.objects;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 public class ConversionParameters {
 
@@ -100,12 +101,21 @@ public class ConversionParameters {
 		isOpenMod = openMod;
 	}
 
+	public BigDecimal getqValueOverride() {
+		return qValueOverride;
+	}
+
+	public void setqValueOverride(BigDecimal qValueOverride) {
+		this.qValueOverride = qValueOverride;
+	}
+
 	private File fastaFile;
 	private File cometParametersFile;
 	private File limelightXMLOutputFile;
 	private File pepXMLDataDirectory;
 	private File percolatorXMLFile;
 	private boolean isOpenMod;
+	private BigDecimal qValueOverride;
 
 	private ConversionProgramInfo conversionProgramInfo;
 

@@ -133,7 +133,7 @@ public class PSMAnnotationTypes {
 				type.setName( PERCOLATOR_ANNOTATION_TYPE_QVALUE );
 				type.setDescription( "Q-value" );
 				type.setFilterDirection( FilterDirectionType.BELOW );
-				type.setDefaultFilterValue( BigDecimal.valueOf( 0.05 ) );
+				type.setDefaultFilterValue( BigDecimal.valueOf( 0.01 ) );
 	
 				types.add( type );
 			}

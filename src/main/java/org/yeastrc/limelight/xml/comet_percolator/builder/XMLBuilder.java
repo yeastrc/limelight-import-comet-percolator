@@ -313,6 +313,10 @@ public class XMLBuilder {
 					xmlPsm.setPrecursorMZ(MassUtils.getObservedMoverZForPsm(psm));
 					xmlPsm.setPrecursorRetentionTime(psm.getRetentionTime());
 
+					if(percolatorPeptidePSMs.size() > 1) {
+						xmlPsm.setSubgroupName(pepXMLFileName);
+					}
+
 					// add in the filterable PSM annotations (e.g., score)
 					FilterablePsmAnnotations xmlFilterablePsmAnnotations = new FilterablePsmAnnotations();
 					xmlPsm.setFilterablePsmAnnotations(xmlFilterablePsmAnnotations);

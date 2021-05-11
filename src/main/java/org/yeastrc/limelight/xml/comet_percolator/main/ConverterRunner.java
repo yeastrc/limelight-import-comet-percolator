@@ -63,7 +63,7 @@ public class ConverterRunner {
 			System.err.println(" Done.");
 
 			System.err.print("Writing out XML...");
-			(new XMLBuilder()).buildAndSaveXML(conversionParameters, cometResults, percResults, cometParams);
+			(new XMLBuilder()).buildAndSaveXML(conversionParameters, cometResults, percResults, cometParams, pepXMLFiles.size() > 1);
 			System.err.println(" Done.");
 		}
 

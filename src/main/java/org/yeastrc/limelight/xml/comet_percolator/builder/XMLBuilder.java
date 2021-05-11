@@ -36,7 +36,8 @@ public class XMLBuilder {
 	public void buildAndSaveXML( ConversionParameters conversionParameters,
 			                     CometResults cometResults,
 			                     PercolatorResults percolatorResults,
-			                     CometParameters cometParameters )
+			                     CometParameters cometParameters,
+								 boolean subGroupsPresent)
     throws Exception {
 
 		LimelightInput limelightInputRoot = new LimelightInput();
@@ -313,7 +314,7 @@ public class XMLBuilder {
 					xmlPsm.setPrecursorMZ(MassUtils.getObservedMoverZForPsm(psm));
 					xmlPsm.setPrecursorRetentionTime(psm.getRetentionTime());
 
-					if(percolatorPeptidePSMs.size() > 1) {
+					if(subGroupsPresent) {
 						xmlPsm.setSubgroupName(pepXMLFileName);
 					}
 

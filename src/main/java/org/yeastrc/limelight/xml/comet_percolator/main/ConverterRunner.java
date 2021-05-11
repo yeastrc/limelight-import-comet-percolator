@@ -39,31 +39,33 @@ public class ConverterRunner {
 	
 	
 	public void convertCometPercolatorToLimelightXML(ConversionParameters conversionParameters ) throws Throwable {
-	
-		System.err.print( "Reading comet params into memory..." );
-		CometParameters cometParams = CometParamsReader.getCometParameters( conversionParameters.getCometParametersFile() );
-		ConversionUtils.conditionallyAddFastaToConversionParameters( conversionParameters, cometParams );
-		System.err.println( " Done." );
 
-		System.err.print( "Reading Percolator XML data into memory..." );
-		PercolatorResults percResults = PercolatorResultsReader.getPercolatorResults( conversionParameters.getPercolatorXMLFile() );
-		System.err.println( " Done." );
+		{
+			System.err.print("Reading comet params into memory...");
+			CometParameters cometParams = CometParamsReader.getCometParameters(conversionParameters.getCometParametersFile());
+			ConversionUtils.conditionallyAddFastaToConversionParameters(conversionParameters, cometParams);
+			System.err.println(" Done.");
 
-		System.err.print( "Locating pepXML files using Percolator results..." );
-		Collection<File> pepXMLFiles = ConversionUtils.findPepXMLFilesUsingPercolatorResults( conversionParameters, percResults );
-		System.err.println( " Done." );
+			System.err.print("Reading Percolator XML data into memory...");
+			PercolatorResults percResults = PercolatorResultsReader.getPercolatorResults(conversionParameters.getPercolatorXMLFile());
+			System.err.println(" Done.");
 
-		System.err.print( "Reading Comet pepXML data into memory..." );
-		CometResults cometResults = CometPepXMLResultsParser.getCometResults( pepXMLFiles, cometParams, percResults.getReportedPeptideResults().keySet() );
-		System.err.println( " Done." );
-		
-		System.err.print( "Verifying all percolator results have comet results..." );
-		CometPercolatorValidator.validateData( cometResults, percResults );
-		System.err.println( " Done." );
+			System.err.print("Locating pepXML files using Percolator results...");
+			Collection<File> pepXMLFiles = ConversionUtils.findPepXMLFilesUsingPercolatorResults(conversionParameters, percResults);
+			System.err.println(" Done.");
 
-		System.err.print( "Writing out XML..." );
-		(new XMLBuilder()).buildAndSaveXML( conversionParameters, cometResults, percResults, cometParams );
-		System.err.println( " Done." );
+			System.err.print("Reading Comet pepXML data into memory...");
+			CometResults cometResults = CometPepXMLResultsParser.getCometResults(pepXMLFiles, cometParams, percResults.getReportedPeptideResults().keySet());
+			System.err.println(" Done.");
+
+			System.err.print("Verifying all percolator results have comet results...");
+			CometPercolatorValidator.validateData(cometResults, percResults);
+			System.err.println(" Done.");
+
+			System.err.print("Writing out XML...");
+			(new XMLBuilder()).buildAndSaveXML(conversionParameters, cometResults, percResults, cometParams);
+			System.err.println(" Done.");
+		}
 
 		// validate the limelight xml
 		System.err.print( "Validating Limelight XML..." );

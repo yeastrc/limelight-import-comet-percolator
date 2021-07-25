@@ -15,6 +15,7 @@ import org.yeastrc.limelight.xml.comet_percolator.objects.CometReportedPeptide;
 
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
 import org.yeastrc.limelight.xml.comet_percolator.utils.ConversionUtils;
+import org.yeastrc.limelight.xml.comet_percolator.utils.ProteinSequenceUtils;
 import org.yeastrc.proteomics.fasta.*;
 
 
@@ -246,6 +247,7 @@ public class MatchedProteinsBuilder {
 					if( fastaEntryContainProteinName( proteinName, entry ) ) {
 
 						String sequence = entry.getSequence();
+						sequence = ProteinSequenceUtils.trimTrailingStar(sequence);
 
 						MatchedProteinInformation mpi = null;
 						Collection<FastaProteinAnnotation> fastaAnnotations = null;

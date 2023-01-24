@@ -7,24 +7,19 @@ import org.yeastrc.limelight.xml.comet_percolator.objects.CometResults;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CometParsingUtils {
 
-    /**
-     *
-     * @param reportedPeptide
-     * @param cometResults
-     * @return
-     */
-	public static CometReportedPeptide getCometReportedPeptideForString( String reportedPeptide, CometResults cometResults ) {
-		
+	public static Map<String, CometReportedPeptide> getPercolatorReportedPeptideToCometReportedPeptideMap(CometResults cometResults) {
+		Map<String, CometReportedPeptide> percRpToCometTpMap = new HashMap<>();
+
 		for( CometReportedPeptide cometPeptide : cometResults.getPeptidePSMMap().keySet() ) {
-			if( cometPeptide.getReportedPeptideString().equals( reportedPeptide ) ) {
-				return cometPeptide;
-			}
+			percRpToCometTpMap.put(cometPeptide.getReportedPeptideString(), cometPeptide);
 		}
-		
-		return null;
+
+		return percRpToCometTpMap;
 	}
 
 	/**

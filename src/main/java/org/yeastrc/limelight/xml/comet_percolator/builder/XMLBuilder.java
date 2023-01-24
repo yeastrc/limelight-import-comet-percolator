@@ -190,9 +190,10 @@ public class XMLBuilder {
 		limelightInputRoot.setReportedPeptides( reportedPeptides );
 		
 		// iterate over each distinct reported peptide
+		Map<String, CometReportedPeptide> percReportedPeptideToCometReportedPeptideCache = CometParsingUtils.getPercolatorReportedPeptideToCometReportedPeptideMap(cometResults);
 		for( String percolatorReportedPeptide : percolatorResults.getReportedPeptideResults().keySet() ) {
 
-			CometReportedPeptide cometReportedPeptide = CometParsingUtils.getCometReportedPeptideForString( percolatorReportedPeptide, cometResults );
+			CometReportedPeptide cometReportedPeptide = percReportedPeptideToCometReportedPeptideCache.get(percolatorReportedPeptide);
 			
 			ReportedPeptide xmlReportedPeptide = new ReportedPeptide();
 			reportedPeptides.getReportedPeptide().add( xmlReportedPeptide );

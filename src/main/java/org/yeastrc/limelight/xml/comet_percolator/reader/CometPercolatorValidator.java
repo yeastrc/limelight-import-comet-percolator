@@ -19,10 +19,13 @@ public class CometPercolatorValidator {
 	 */
 	public static void validateData(CometResults cometResults, PercolatorResults percolatorResults ) throws Exception {
 
+		// build a cache of percolator reported peptide string => CometReportedPeptide
+		Map<String, CometReportedPeptide> percReportedPeptideToCometReportedPeptideCache = CometParsingUtils.getPercolatorReportedPeptideToCometReportedPeptideMap(cometResults);
+
 		for( String percolatorReportedPeptide : percolatorResults.getReportedPeptideResults().keySet() ) {
 
 			Map<String, Map<Integer, PercolatorPSM>> percolatorPeptideDataMap = percolatorResults.getReportedPeptideResults().get( percolatorReportedPeptide ).getPercolatorPSMs();
-			CometReportedPeptide cometReportedPeptide = CometParsingUtils.getCometReportedPeptideForString(percolatorReportedPeptide, cometResults);
+			CometReportedPeptide cometReportedPeptide = percReportedPeptideToCometReportedPeptideCache.get(percolatorReportedPeptide);
 
 			Map<String, Map<Integer, CometPSM>> cometMap = cometResults.getPeptidePSMMap().get( cometReportedPeptide );
 

@@ -109,6 +109,22 @@ public class ConversionParameters {
 		this.qValueOverride = qValueOverride;
 	}
 
+	public boolean isImportDecoys() {
+		return importDecoys;
+	}
+
+	public void setImportDecoys(boolean importDecoys) {
+		this.importDecoys = importDecoys;
+	}
+
+	public String getIndependentDecoyPrefix() {
+		return independentDecoyPrefix;
+	}
+
+	public void setIndependentDecoyPrefix(String independentDecoyPrefix) {
+		this.independentDecoyPrefix = independentDecoyPrefix;
+	}
+
 	private File fastaFile;
 	private File cometParametersFile;
 	private File limelightXMLOutputFile;
@@ -116,7 +132,8 @@ public class ConversionParameters {
 	private File percolatorXMLFile;
 	private boolean isOpenMod;
 	private BigDecimal qValueOverride;
-
+	private boolean importDecoys = false;
+	private String independentDecoyPrefix;
 	private ConversionProgramInfo conversionProgramInfo;
 
 }

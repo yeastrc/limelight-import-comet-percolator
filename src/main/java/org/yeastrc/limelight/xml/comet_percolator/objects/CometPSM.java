@@ -20,6 +20,8 @@ public class CometPSM {
 	private BigDecimal precursorNeutralMass;
 	private int charge;
 	private BigDecimal retentionTime;
+	private boolean isDecoy = false;
+	private boolean isIndependentDecoy = false;
 
 	@Override
 	public String toString() {
@@ -36,11 +38,29 @@ public class CometPSM {
 				", precursorNeutralMass=" + precursorNeutralMass +
 				", charge=" + charge +
 				", retentionTime=" + retentionTime +
+				", isDecoy=" + isDecoy +
+				", isIndependentDecoy=" + isIndependentDecoy +
 				", peptideSequence='" + peptideSequence + '\'' +
 				", modifications=" + modifications +
 				", fdr=" + fdr +
 				", proteinNames=" + proteinNames +
 				'}';
+	}
+
+	public boolean isDecoy() {
+		return isDecoy;
+	}
+
+	public void setDecoy(boolean decoy) {
+		isDecoy = decoy;
+	}
+
+	public boolean isIndependentDecoy() {
+		return isIndependentDecoy;
+	}
+
+	public void setIndependentDecoy(boolean independentDecoy) {
+		isIndependentDecoy = independentDecoy;
 	}
 
 	private String peptideSequence;

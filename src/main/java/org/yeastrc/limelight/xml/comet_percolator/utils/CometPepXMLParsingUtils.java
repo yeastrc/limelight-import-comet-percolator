@@ -25,6 +25,7 @@ import net.systemsbiology.regis_web.pepxml.MsmsPipelineAnalysis.MsmsRunSummary.S
 import net.systemsbiology.regis_web.pepxml.MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery.SearchResult.SearchHit;
 
 import org.yeastrc.limelight.xml.comet_percolator.objects.CometParameters;
+import org.yeastrc.limelight.xml.comet_percolator.objects.ConversionParameters;
 
 public class CometPepXMLParsingUtils {
 
@@ -156,7 +157,8 @@ public class CometPepXMLParsingUtils {
 			int scanNumber,
 			BigDecimal obsMass,
 			BigDecimal retentionTime,
-			CometParameters cometParams ) throws Throwable {
+			CometParameters cometParams,
+			ConversionParameters conversionParameters) throws Throwable {
 				
 		CometPSM psm = new CometPSM();
 		
@@ -185,7 +187,7 @@ public class CometPepXMLParsingUtils {
 		psm.seteValue( getScoreForType( searchHit, "expect" ) );
 
 		try {
-			psm.setProteinNames( getProteinNamesForSearchHit( searchHit, cometParams ) );
+			psm.setProteinNames( getProteinNamesForSearchHit( searchHit, cometParams, conversionParameters ) );
 		} catch( Throwable t ) {
 
 			String error = "Error getting protein names for PSM.\n";
@@ -276,12 +278,14 @@ public class CometPepXMLParsingUtils {
 		return modMap;
 	}
 
-	public static Collection<String> getProteinNamesForSearchHit(SearchHit searchHit, CometParameters cometParams ) throws Throwable {
+	public static Collection<String> getProteinNamesForSearchHit(SearchHit searchHit, CometParameters cometParams, ConversionParameters conversionParameters) throws Throwable {
 
 		Collection<String> proteins = new HashSet<>();
 
-		if( searchHit.getProtein() != null && !CometParsingUtils.isDecoyProtein( searchHit.getProtein(), cometParams ) ) {
-			proteins.add( searchHit.getProtein());
+		if(searchHit.getProtein() != null) {
+			if(conversionParameters.isImportDecoys() || (!conversionParameters.isImportDecoys() && !CometParsingUtils.isDecoyProtein( searchHit.getProtein(), cometParams ))) {
+				proteins.add(searchHit.getProtein());
+			}
 		}
 
 		if( searchHit.getAlternativeProtein() != null && searchHit.getAlternativeProtein().size() > 0 ) {

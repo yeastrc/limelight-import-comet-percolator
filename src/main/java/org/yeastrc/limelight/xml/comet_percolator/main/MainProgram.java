@@ -62,6 +62,12 @@ public class MainProgram implements Runnable {
 	@CommandLine.Option(names = { "-q", "--q-value" }, required = false, description = "(Optional) Override the default q-value cutoff to this value.")
 	private BigDecimal qValueOverride;
 
+	@CommandLine.Option(names = { "--import-decoys" }, required = false, description = "(Optional) If this parameter is set, decoys will be imported. Note, percolator must be run with -Z to output decoys.")
+	private boolean importDecoys;
+
+	@CommandLine.Option(names = { "--independent-decoy-prefix" }, required = false, description = "If present, any hits to proteins that begin with this string will be considered \"independent decoys,\" for the purpose of error estimation. See: https://pubmed.ncbi.nlm.nih.gov/21876204/")
+	private String independentDecoyPrefix;;
+
 	@CommandLine.Option(names = { "-o", "--out-file" }, required = true, description = "Full path to use for the Limelight XML output file. E.g., /data/my_analysis/crux.limelight.xml")
 	private File outFile;
 
@@ -122,6 +128,8 @@ public class MainProgram implements Runnable {
 		cp.setLimelightXMLOutputFile( outFile );
 		cp.setOpenMod(isOpenMod);
 		cp.setqValueOverride( qValueOverride );
+		cp.setImportDecoys(importDecoys);
+		cp.setIndependentDecoyPrefix(independentDecoyPrefix);
 
 		try {
 			ConverterRunner.createInstance().convertCometPercolatorToLimelightXML(cp);

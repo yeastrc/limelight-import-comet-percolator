@@ -55,7 +55,7 @@ public class ConverterRunner {
 			System.err.println(" Done.");
 
 			System.err.print("Reading Comet pepXML data into memory...");
-			CometResults cometResults = CometPepXMLResultsParser.getCometResults(pepXMLFiles, cometParams, percResults.getReportedPeptideResults().keySet());
+			CometResults cometResults = CometPepXMLResultsParser.getCometResults(pepXMLFiles, cometParams, percResults.getReportedPeptideResults().keySet(), conversionParameters);
 			System.err.println(" Done.");
 
 			System.err.print("Verifying all percolator results have comet results...");

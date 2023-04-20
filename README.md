@@ -15,11 +15,15 @@ Command line documentation
 ---------------------------
 
 ```
-java -jar cometPercolator2LimelightXML.jar [-hvV] [--open-mod]
+java -jar cometPercolator2LimelightXML.jar [-hvV] [--import-decoys]
+                                           [--open-mod]
+                                           [--independent-decoy-prefix=<independ
+                                           entDecoyPrefix>]
                                            -c=<cometParamsFile>
                                            [-d=<pepXMLDirectory>]
                                            [-f=<fastaFile>] -o=<outFile>
                                            -p=<percolatorFile>
+                                           [-q=<qValueOverride>]
 
 Description:
 
@@ -43,6 +47,17 @@ Options:
                                file. If this is not true, use this option to specify
                                the _directory_ in which the pepXML files may be
                                found.
+  -q, --q-value=<qValueOverride>
+                             (Optional) Override the default q-value cutoff to this
+                               value.
+      --import-decoys        (Optional) If this parameter is set, decoys will be
+                               imported. Note, percolator must be run with -Z to
+                               output decoys.
+      --independent-decoy-prefix=<independentDecoyPrefix>
+                             If present, any hits to proteins that begin with this
+                               string will be considered "independent decoys," for
+                               the purpose of error estimation. See: https://pubmed.
+                               ncbi.nlm.nih.gov/21876204/
   -o, --out-file=<outFile>   Full path to use for the Limelight XML output file. E.
                                g., /data/my_analysis/crux.limelight.xml
   -v, --verbose              If this parameter is present, error messages will
@@ -52,5 +67,4 @@ Options:
                                as an unlocalized modification mass for the peptide.
   -h, --help                 Show this help message and exit.
   -V, --version              Print version information and exit.
-
 ```
